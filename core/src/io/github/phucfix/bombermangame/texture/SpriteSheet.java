@@ -16,7 +16,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public enum SpriteSheet {
     
     /** The character spritesheet, which has a grid size of 16x32. */
-    CHARACTER("character.png", 16, 32),
+    // CHARACTER("character.png", 16, 32),
+
+    /** The character has grid size of 16x16*/
+    CHARACTER("original-bomberman.png", 16, 16),
+    /** The obj has grid size of 16x16 */
+    OBJECTS("original-bomberman.png", 16, 16),
     /** The basic tiles spritesheet, which has a grid size of 16x16. */
     BASIC_TILES("basictiles.png", 16, 16);
     
@@ -41,7 +46,8 @@ public enum SpriteSheet {
      * Returns the TextureRegion at the specified row and column (1-based coordinates)
      * according to the grid specified by {@code this.width} and {@code this.height}.
      * This method assumes the size of the texture to be a single grid cell.
-     *
+     * Sprite sheet textures usually start in the top-left corner.
+     * The row index start at 1 at the top and the column start at 1 on the left.
      * @param row the row of the texture to fetch, starting from 1 at the TOP of the spritesheet
      * @param column the column of the texture to fetch, starting from 1 on the LEFT of the spritesheet
      * @return the texture

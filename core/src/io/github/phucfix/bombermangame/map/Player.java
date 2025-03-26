@@ -1,12 +1,18 @@
 package io.github.phucfix.bombermangame.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
+
 import io.github.phucfix.bombermangame.texture.Animations;
 import io.github.phucfix.bombermangame.texture.Drawable;
+import io.github.phucfix.bombermangame.texture.SpriteSheet;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
 
 /**
  * Represents the player character in the game.
@@ -63,16 +69,50 @@ public class Player implements Drawable {
      */
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
-        // Make the player move in a circle with radius 2 tiles
-        float xVelocity = (float) Math.sin(this.elapsedTime) * 2;
-        float yVelocity = (float) Math.cos(this.elapsedTime) * 2;
+        // You can change this to make the player move differently, e.g. in response to user input.
+        // See Gdx.input.isKeyPressed() for keyboard input
+        float xVelocity = 0;
+        float yVelocity = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xVelocity = -5;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xVelocity = 5;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            yVelocity = -5;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            yVelocity = 5;
+        }
+
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
-    
+
+    // Initially the Character is facing Right.
+    TextureRegion facing = SpriteSheet.CHARACTER.at(2,2);
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            MusicTrack.PLAYER_MOVE.play();
+            facing = SpriteSheet.CHARACTER.at(1,2);
+            return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            MusicTrack.PLAYER_MOVE.play();
+            facing = SpriteSheet.CHARACTER.at(2,5);
+            return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            MusicTrack.PLAYER_MOVE.play();
+            facing = SpriteSheet.CHARACTER.at(1,5);
+            return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            MusicTrack.PLAYER_MOVE.play();
+            facing = SpriteSheet.CHARACTER.at(2,2);
+            return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
+        }
+        MusicTrack.PLAYER_MOVE.stop();
+        return facing;
     }
     
     @Override

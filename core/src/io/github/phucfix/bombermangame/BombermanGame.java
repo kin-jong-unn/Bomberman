@@ -60,7 +60,7 @@ public class BombermanGame extends Game {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
         this.map = new GameMap(this); // Create a new game map (you should change this to load the map from a file instead)
-        MusicTrack.BACKGROUND.play(); // Play some background music
+        //MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
     }
 
@@ -68,6 +68,8 @@ public class BombermanGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
+        MusicTrack.BACKGROUND2.stop();
+        MusicTrack.BACKGROUND.play();
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
     }
 
@@ -75,6 +77,8 @@ public class BombermanGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        MusicTrack.BACKGROUND.stop();
+        MusicTrack.BACKGROUND2.play();
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
 

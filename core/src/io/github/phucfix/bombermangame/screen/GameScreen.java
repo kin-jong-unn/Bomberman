@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.map.Flowers;
@@ -90,8 +91,8 @@ public class GameScreen implements Screen {
      */
     private void updateCamera() {
         mapCamera.setToOrtho(false);
-        mapCamera.position.x = 3.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = 3.5f * TILE_SIZE_PX * SCALE;
+        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX(), 8,40) * TILE_SIZE_PX * SCALE;
+        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 7,13)* TILE_SIZE_PX * SCALE;
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -109,6 +110,8 @@ public class GameScreen implements Screen {
         }
         draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());
+        draw(spriteBatch, map.getWall());
+        draw(spriteBatch, map.getWall2());
         
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

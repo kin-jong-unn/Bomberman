@@ -41,11 +41,17 @@ public class GameMap {
     private final BombermanGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
-    
+
+    public float mapWidth = 15*16f, mapHeight = 15*16f;
+
     // Game objects
     private final Player player;
     
     private final Chest chest;
+
+    private final Wall wall;
+
+    private final BreakableWall wall2;
     
     private final Flowers[][] flowers;
 
@@ -55,9 +61,13 @@ public class GameMap {
         // Create a player with initial position (1, 3)
         this.player = new Player(this.world, 1, 3);
         // Create a chest in the middle of the map
-        this.chest = new Chest(world, 3, 3);
+        this.chest = new Chest(world, 12, 12);
         // Create flowers in a 7x7 grid
-        this.flowers = new Flowers[7][7];
+        this.wall = new Wall(this.world, 8, 8);
+
+        this.wall2 = new BreakableWall(this.world, 9, 9);
+
+        this.flowers = new Flowers[30][18];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
@@ -96,6 +106,14 @@ public class GameMap {
     /** Returns the chest on the map. */
     public Chest getChest() {
         return chest;
+    }
+
+    public Wall getWall() {
+        return wall;
+    }
+
+    public BreakableWall getWall2() {
+        return wall2;
     }
     
     /** Returns the flowers on the map. */

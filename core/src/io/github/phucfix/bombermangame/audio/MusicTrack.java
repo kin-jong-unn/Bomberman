@@ -13,7 +13,9 @@ import com.badlogic.gdx.audio.Music;
  */
 public enum MusicTrack {
     
-    BACKGROUND("background.mp3", 0.2f);
+    BACKGROUND("background.mp3", 0.2f),
+    PLAYER_MOVE("running-in-grass-sound.mp3", 0.3f),
+    BACKGROUND2("background2.mp3", 0.2f);
     
     /** The music file owned by this variant. */
     private final Music music;
@@ -24,8 +26,14 @@ public enum MusicTrack {
         this.music.setVolume(volume);
     }
     
-    /** Play this music track. Any other music will be stopped. */
+    /** Play this music track. */
     public void play() {
         this.music.play();
     }
+
+    /** Stop music track */
+    public void stop() {
+        this.music.stop();
+    }
+
 }

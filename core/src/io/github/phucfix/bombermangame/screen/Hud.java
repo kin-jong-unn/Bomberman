@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * A Heads-Up Display (HUD) that displays information on the screen.
@@ -34,7 +35,10 @@ public class Hud {
         // Start drawing
         spriteBatch.begin();
         // Draw the HUD elements
-        font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+        font.setColor(Color.WHITE);
+        font.draw(spriteBatch, "Press Esc to Pause!", 10, 30);
+        font.setColor(Color.YELLOW);
+        font.draw(spriteBatch, "Bomb blast radius: 1", 10, Gdx.graphics.getHeight() - 10);
         // Finish drawing
         spriteBatch.end();
     }
