@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.map.Flowers;
+import io.github.phucfix.bombermangame.map.Wall;
 import io.github.phucfix.bombermangame.texture.Drawable;
 import io.github.phucfix.bombermangame.map.GameMap;
 
@@ -32,7 +33,7 @@ public class GameScreen implements Screen {
      * The scale of the game.
      * This is used to make everything in the game look bigger or smaller.
      */
-    public static final int SCALE = 4;
+    public static final float SCALE = 3.6f;
 
     private final BombermanGame game;
     private final SpriteBatch spriteBatch;
@@ -91,8 +92,8 @@ public class GameScreen implements Screen {
      */
     private void updateCamera() {
         mapCamera.setToOrtho(false);
-        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX(), 8,40) * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 7,13)* TILE_SIZE_PX * SCALE;
+        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX(), 10.2f,19.5f) * TILE_SIZE_PX * SCALE;
+        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 6.5f,11.5f)* TILE_SIZE_PX * SCALE;
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -110,7 +111,13 @@ public class GameScreen implements Screen {
         }
         draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());
-        draw(spriteBatch, map.getWall());
+
+        for (Wall wall : map.getWalls()) {
+            if (wall != null) {
+                draw(spriteBatch, wall);
+            }
+        }
+
         draw(spriteBatch, map.getWall2());
         
         // Finish drawing, i.e. send the drawn items to the graphics card
