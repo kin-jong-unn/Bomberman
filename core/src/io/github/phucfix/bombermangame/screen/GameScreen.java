@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.phucfix.bombermangame.BombermanGame;
+import io.github.phucfix.bombermangame.map.BreakableWall;
 import io.github.phucfix.bombermangame.map.Flowers;
 import io.github.phucfix.bombermangame.map.Wall;
 import io.github.phucfix.bombermangame.texture.Drawable;
@@ -109,8 +110,8 @@ public class GameScreen implements Screen {
         for (Flowers flowers : map.getFlowers()) {
             draw(spriteBatch, flowers);
         }
+
         draw(spriteBatch, map.getChest());
-        draw(spriteBatch, map.getPlayer());
 
         for (Wall wall : map.getWalls()) {
             if (wall != null) {
@@ -118,7 +119,14 @@ public class GameScreen implements Screen {
             }
         }
 
-        draw(spriteBatch, map.getWall2());
+        for (BreakableWall breakableWall : map.getBreakableWalls()) {
+            if(breakableWall != null) {
+                draw(spriteBatch, breakableWall);
+            }
+        }
+
+        draw(spriteBatch, map.getPlayer());
+
         
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

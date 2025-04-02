@@ -52,7 +52,7 @@ public class GameMap {
 
     private final Wall[][] walls;
 
-    private final BreakableWall wall2;
+    private final BreakableWall[][] breakableWalls;
     
     private final Flowers[][] flowers;
 
@@ -60,9 +60,9 @@ public class GameMap {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 1, 15);
+        this.player = new Player(this.world, 7, 15);
         // Create a chest in the map
-        this.chest = new Chest(world, 7, 7);
+        this.chest = new Chest(world, 8, 15);
         // Create flowers in a 7x7 grid
         this.walls = new Wall[29][17];
         for (int i = 0; i < walls.length; i++) {
@@ -74,7 +74,15 @@ public class GameMap {
             }
         }
 
-        this.wall2 = new BreakableWall(this.world, 9, 9);
+        this.breakableWalls = new BreakableWall[29][17];
+        for (int i = 1; i < breakableWalls.length; i++) {
+            for (int j = 1; j < breakableWalls[i].length; j++) {
+                // Place walls only on the boundary cells (edges)
+                if ((i % 2 == 1 && j % 2 == 1)&& i > 8 && j > 8) {
+                    this.breakableWalls[i][j] = new BreakableWall(this.world, i, j);
+                }
+            }
+        }
 
         this.flowers = new Flowers[28][16];
         for (int i = 0; i < flowers.length; i++) {
@@ -122,8 +130,8 @@ public class GameMap {
         return Arrays.stream(walls).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
     }
 
-    public BreakableWall getWall2() {
-        return wall2;
+    public List<BreakableWall> getBreakableWalls() {
+        return Arrays.stream(breakableWalls).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
     }
     
     /** Returns the flowers on the map. */
