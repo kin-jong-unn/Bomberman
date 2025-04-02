@@ -86,4 +86,14 @@ public class Animations {
             SpriteSheet.OBJECTS.at(4, 11),
             SpriteSheet.OBJECTS.at(3, 8)
     );
+
+    /**
+     * The animation for enemy
+     */
+    public static final Animation<TextureRegion> ENEMY_WALK_RIGHT = new Animation<>(0.13f,
+            SpriteSheet.CHARACTER.at(16, 1),
+            SpriteSheet.CHARACTER.at(16, 2),
+            SpriteSheet.CHARACTER.at(16, 3),
+            SpriteSheet.CHARACTER.at(16, 2)
+    );
 }

@@ -44,7 +44,7 @@ public class Chest implements Drawable {
         // We'll use a polygon shape for the chest.
         PolygonShape box = new PolygonShape();
         // Changed the dimensions of hitbox to prevent overlapping ( Long )
-        box.setAsBox(0.63f, 0.66f);
+        box.setAsBox(0.5f, 0.5f);
         // Attach the shape to the body as a fixture.
         body.createFixture(box, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.

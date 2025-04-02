@@ -43,7 +43,7 @@ public class GameMap {
     /** The Box2D world for physics simulation. */
     private final World world;
 
-    public float mapWidth = 15*16f, mapHeight = 15*16f;
+    public float mapWidth, mapHeight;
 
     // Game objects
     private final Player player;
@@ -60,7 +60,7 @@ public class GameMap {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 7, 15);
+        this.player = new Player(this.world, 1, 15);
         // Create a chest in the map
         this.chest = new Chest(world, 8, 15);
         // Create flowers in a 7x7 grid
@@ -90,6 +90,9 @@ public class GameMap {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
+
+        this.mapWidth = flowers.length;
+        this.mapHeight = flowers[0].length;
     }
     
     /**
