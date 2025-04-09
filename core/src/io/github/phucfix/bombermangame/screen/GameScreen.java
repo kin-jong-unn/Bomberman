@@ -10,11 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.phucfix.bombermangame.BombermanGame;
-import io.github.phucfix.bombermangame.map.BreakableWall;
-import io.github.phucfix.bombermangame.map.Flowers;
-import io.github.phucfix.bombermangame.map.Wall;
+import io.github.phucfix.bombermangame.map.*;
 import io.github.phucfix.bombermangame.texture.Drawable;
-import io.github.phucfix.bombermangame.map.GameMap;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -72,6 +69,8 @@ public class GameScreen implements Screen {
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
+            ///We need to dispose the bloody screen properly. In order to load a new map properly.
+            //            dispose();
         }
         
         // Clear the previous frame from the screen, or else the picture smears
@@ -103,12 +102,12 @@ public class GameScreen implements Screen {
         //mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 6.5f,11.5f)* TILE_SIZE_PX * SCALE;
 
         /// Clamp is used to make it Responsive)
-        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX()* TILE_SIZE_PX * SCALE,
-                (float) viewWidth/(2),
-                map.mapWidth * TILE_SIZE_PX * SCALE- (float)viewWidth/2) ;
-        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY()* TILE_SIZE_PX * SCALE,
-                (float) viewHeight/2,
-                map.mapHeight  * TILE_SIZE_PX * SCALE - (float)viewHeight/2);
+//        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX()* TILE_SIZE_PX * SCALE,
+//                (float) viewWidth/(2),
+//                map.mapWidth * TILE_SIZE_PX * SCALE- (float)viewWidth/2) ;
+//        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY()* TILE_SIZE_PX * SCALE,
+//                (float) viewHeight/2,
+//                map.mapHeight  * TILE_SIZE_PX * SCALE - (float)viewHeight/2);
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -121,26 +120,54 @@ public class GameScreen implements Screen {
         
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-        for (Flowers flowers : map.getFlowers()) {
-            draw(spriteBatch, flowers);
-        }
-
-        draw(spriteBatch, map.getChest());
-
-        for (Wall wall : map.getWalls()) {
-            if (wall != null) {
-                draw(spriteBatch, wall);
+        if (game.isUserChoosenMap() == false) {
+            for (Flowers flowers : map.getFlowers()) {
+                if (flowers != null) {
+                    draw(spriteBatch, flowers);
+                }
             }
-        }
 
-        for (BreakableWall breakableWall : map.getBreakableWalls()) {
-            if(breakableWall != null) {
-                draw(spriteBatch, breakableWall);
+            for (Wall wall : map.getWallsOfDefaultGame()) {
+                if (wall != null) {
+                    draw(spriteBatch, wall);
+                }
             }
+
+            for (BreakableWall breakableWall : map.getBreakableWallsOfDefaultGame()) {
+                if(breakableWall != null) {
+                    draw(spriteBatch, breakableWall);
+                }
+            }
+
+            draw(spriteBatch, map.getChest());
+            draw(spriteBatch, map.getPlayer());
+        } else {
+            for (Flowers flowers : map.getFlowers()) {
+                if (flowers != null) {
+                    draw(spriteBatch, flowers);
+                }
+            }
+
+            for (Wall wall : map.getWallsOfSelectedMap()) {
+                if (wall != null) {
+                    draw(spriteBatch, wall);
+                }
+            }
+
+            for (BreakableWall breakableWall : map.getBreakableWallsOfSelectedMap()) {
+                if(breakableWall != null) {
+                    draw(spriteBatch, breakableWall);
+                }
+            }
+
+            for (Chest chest : map.getChests()) {
+                if (chest != null) {
+                    draw(spriteBatch, chest);
+                }
+            }
+
+            draw(spriteBatch, map.getPlayer());
         }
-
-        draw(spriteBatch, map.getPlayer());
-
         
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

@@ -58,6 +58,16 @@ public class MenuScreen implements Screen {
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
+
+        // Create and add a button to choose a map
+        TextButton goToFileChooserButton = new TextButton("Choose your Map", game.getSkin());
+        table.add(goToFileChooserButton).width(350).row();
+        goToFileChooserButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.loadFileChooser();
+            }
+        });
     }
     
     /**

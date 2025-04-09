@@ -1,15 +1,25 @@
 package io.github.phucfix.bombermangame;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserIntent;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
 import io.github.phucfix.bombermangame.map.GameMap;
 import io.github.phucfix.bombermangame.screen.GameScreen;
 import io.github.phucfix.bombermangame.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.lang.annotation.Native;
+import java.util.HashMap;
 
 /**
  * The BomberQuestGame class represents the core of the Bomber Quest game.
@@ -32,7 +42,11 @@ public class BombermanGame extends Game {
      * which you can use to read the contents of the map file as a String, and then parse it into a {@link GameMap}.
      */
     private final NativeFileChooser fileChooser;
-    
+
+    //The hash map store coord of the respective object
+    private HashMap<String, String> coordinatesAndObjects = new HashMap();
+    private boolean userChoosenMap;
+
     /**
      * The map. This is where all the game objects are stored.
      * This is owned by {@link BombermanGame} and not by {@link GameScreen}
@@ -57,11 +71,20 @@ public class BombermanGame extends Game {
      */
     @Override
     public void create() {
-        this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
-        this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
-        this.map = new GameMap(this); // Create a new game map (you should change this to load the map from a file instead)
-        //MusicTrack.BACKGROUND.play(); // Play some background music
-        goToMenu(); // Navigate to the menu screen
+        // Create sprite batch for rendering
+        this.spriteBatch = new SpriteBatch();
+
+        // Load UI Skin
+        this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
+
+        // Create new map, or can load map from file instead
+        this.map = new GameMap(this);
+
+        // Play some background music
+        //MusicTrack.BACKGROUND.play();
+
+        // Navigate to the menu screen
+        goToMenu();
     }
 
     /**
@@ -77,9 +100,16 @@ public class BombermanGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+    }
+
+    /**
+     * Goes to map selected by user
+     */
+    public void goToSlectedMap() {
         MusicTrack.BACKGROUND.stop();
         MusicTrack.BACKGROUND2.play();
-        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+        this.setScreen(new GameScreen(this));
     }
 
     /** Returns the skin for UI elements. */
@@ -108,6 +138,91 @@ public class BombermanGame extends Game {
         if (previousScreen != null) {
             previousScreen.dispose();
         }
+    }
+
+    public NativeFileChooser getFileCHoose() {
+        return fileChooser;
+    }
+
+    public HashMap<String, String> getCoordinatesAndObjects() {
+        return coordinatesAndObjects;
+    }
+
+    public void setCoordinatesAndObjects(HashMap<String, String> coordinatesAndObjects) {
+        this.coordinatesAndObjects = coordinatesAndObjects;
+    }
+
+    public boolean isUserChoosenMap() {
+        return userChoosenMap;
+    }
+
+    public void setUserChoosenMap(boolean userChoosenMap) {
+        this.userChoosenMap = userChoosenMap;
+    }
+
+    public void loadFileChooser() {
+        // First params of chooseFile method, important to open dir and lead to the correct dir
+        NativeFileChooserConfiguration configuration = new NativeFileChooserConfiguration();
+        // Title
+        configuration.title = "Please choose file map";
+        // Directory, most important, without this the user won't show up
+        configuration.directory = Gdx.files.getFileHandle("maps/", Files.FileType.Internal);
+        // Optional: Intent
+        // configuration.intent = NativeFileChooserIntent.OPEN;
+
+        // Filter by suffixes
+        configuration.nameFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".properties");
+            }
+        };
+
+        // Params to decide what happens like choosing a file and cancel the process
+        NativeFileChooserCallback fileChooserCallback = new NativeFileChooserCallback() {
+            @Override
+            public void onFileChosen(FileHandle fileHandle) {
+                setUserChoosenMap(true);
+
+                // Read the properties files
+                String EntireText = fileHandle.readString();
+                // Split map properties
+                String[] linesOfText = EntireText.split("\n");
+
+
+                ///This method will take that array, and will split it again on the basis of "=",
+                ///So the end result should bring us to the selected map in the game.
+                doYourMagic(linesOfText);
+            }
+
+            @Override
+            public void onCancellation() {
+                System.out.println("Cancel");
+                setUserChoosenMap(false);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("Error " + e);
+                setUserChoosenMap(false);
+            }
+        };
+    }
+
+    // Converting array String into hashmap and then invoking the Game Map constructor
+    // The Constructor will parse hashmap to GameMap, creating object in that map
+    public void doYourMagic(String[] linesOfText) {
+        for (String line : linesOfText) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            String[] keyValue = line.split("=");
+            coordinatesAndObjects.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+
+        this.map = new GameMap(this, coordinatesAndObjects);
+        goToSlectedMap();
     }
 
     /** Cleans up resources when the game is disposed. */
