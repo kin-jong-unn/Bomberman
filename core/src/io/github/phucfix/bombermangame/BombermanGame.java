@@ -4,6 +4,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -92,6 +93,7 @@ public class BombermanGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
+        MusicTrack.PLAYER_MOVE.stop();
         MusicTrack.BACKGROUND2.stop();
         MusicTrack.BACKGROUND.play();
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
@@ -204,7 +206,6 @@ public class BombermanGame extends Game {
                 String EntireText = file.readString();
                 // Split map properties
                 String[] linesOfText = EntireText.split("\n");
-
 
                 ///This method will take that array, and will split it again on the basis of "=",
                 ///So the end result should bring us to the selected map in the game.

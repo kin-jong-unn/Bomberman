@@ -46,7 +46,9 @@ public class GameMap {
 
     // Game objects
     private Player player;
-    
+
+    private Enemy enemy;
+
     private Chest chest;
 
     private Wall[][] wallsOfDefaultGame;
@@ -65,6 +67,7 @@ public class GameMap {
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
         this.player = new Player(this.world, 1, 15);
+        this.enemy = new Enemy(this.world, 3, 15);
         // Create a chest in the map
         this.chest = new Chest(world, 8, 15);
         // Create flowers in a 7x7 grid
@@ -114,13 +117,15 @@ public class GameMap {
         this.breakableWallsOfSelectedMap = new ArrayList<>();
         this.chests = new ArrayList<>();
 
-        this.flowers = new Flowers[29][17];
+        this.flowers = new Flowers[21][21];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
 
+        this.mapWidth = flowers.length;
+        this.mapHeight = flowers[0].length;
         parseKeyValueToBuild(coordinatesAndObject);
     }
 
@@ -135,10 +140,10 @@ public class GameMap {
                 case "0" -> this.wallsOfSelectedMap.add(new Wall(world, x, y));
                 case "1" -> this.breakableWallsOfSelectedMap.add(new BreakableWall(world, x, y));
                 case "2" -> this.player = new Player(world, x, y);
-                case "3" -> this.chest = new Chest(world, x, y);
-                case "4" -> this.chest = new Chest(world, x, y);
-                case "5" -> this.chest = new Chest(world, x, y);
-                case "6" -> this.chest = new Chest(world, x, y);
+//                case "3" -> this.chest = new Chest(world, x, y);
+//                case "4" -> this.chest = new Chest(world, x, y);
+//                case "5" -> this.chest = new Chest(world, x, y);
+//                case "6" -> this.chest = new Chest(world, x, y);
             }
         }
     }
@@ -150,6 +155,7 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        this.enemy.tick(frameTime);
         doPhysicsStep(frameTime);
     }
     
@@ -173,6 +179,10 @@ public class GameMap {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
     }
     
     /** Returns the chest on the map. */

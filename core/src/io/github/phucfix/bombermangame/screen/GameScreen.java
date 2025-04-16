@@ -37,6 +37,7 @@ public class GameScreen implements Screen {
     public static int viewWidth, viewHeight;
 
     private final BombermanGame game;
+    private static boolean isLost;
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
@@ -49,6 +50,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(BombermanGame game) {
         this.game = game;
+        isLost = false;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
         this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), game);
@@ -59,6 +61,10 @@ public class GameScreen implements Screen {
         viewWidth = Gdx.graphics.getWidth();
         viewHeight = Gdx.graphics.getHeight();
     }
+
+    public static void setLost(boolean lost) {
+        isLost = true;
+    }
     
     /**
      * The render method is called every frame to render the game.
@@ -67,7 +73,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || isLost) {
             game.goToMenu();
             ///We need to dispose the bloody screen properly. In order to load a new map properly.
             //            dispose();
@@ -104,12 +110,12 @@ public class GameScreen implements Screen {
         //mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 6.5f,11.5f)* TILE_SIZE_PX * SCALE;
 
         /// Clamp is used to make it Responsive)
-//        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX()* TILE_SIZE_PX * SCALE,
-//                (float) viewWidth/(2),
-//                map.mapWidth * TILE_SIZE_PX * SCALE- (float)viewWidth/2) ;
-//        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY()* TILE_SIZE_PX * SCALE,
-//                (float) viewHeight/2,
-//                map.mapHeight  * TILE_SIZE_PX * SCALE - (float)viewHeight/2);
+        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX()* TILE_SIZE_PX * SCALE,
+                (float) viewWidth/(2),
+                Math.max(map.mapWidth * TILE_SIZE_PX * SCALE- (float)viewWidth/2, viewWidth)) ;
+        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY()* TILE_SIZE_PX * SCALE,
+                (float) viewHeight/2,
+                map.mapHeight  * TILE_SIZE_PX * SCALE - (float)viewHeight/2);
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -143,6 +149,7 @@ public class GameScreen implements Screen {
 
             draw(spriteBatch, map.getChest());
             draw(spriteBatch, map.getPlayer());
+            draw(spriteBatch, map.getEnemy());
         } else {
             for (Flowers flowers : map.getFlowers()) {
                 if (flowers != null) {

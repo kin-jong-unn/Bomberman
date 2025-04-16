@@ -91,7 +91,10 @@ public class Player implements Drawable {
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if ((int) this.getX() == 2 && (int) this.getY() == 15) {
+            MusicTrack.PLAYER_MOVE.stop();
+            return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             MusicTrack.PLAYER_MOVE.play();
             facing = SpriteSheet.CHARACTER.at(1,2);
             return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
