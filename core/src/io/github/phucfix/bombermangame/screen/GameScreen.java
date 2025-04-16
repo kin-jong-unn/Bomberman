@@ -120,7 +120,7 @@ public class GameScreen implements Screen {
         
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-        if (game.isUserChoosenMap() == false) {
+        if (!game.isUserChoosenMap()) {
             for (Flowers flowers : map.getFlowers()) {
                 if (flowers != null) {
                     draw(spriteBatch, flowers);

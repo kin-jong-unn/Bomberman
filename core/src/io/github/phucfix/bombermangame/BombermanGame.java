@@ -18,7 +18,6 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.lang.annotation.Native;
 import java.util.HashMap;
 
 /**
@@ -100,6 +99,8 @@ public class BombermanGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        MusicTrack.BACKGROUND.stop();
+        MusicTrack.BACKGROUND2.play();
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
 
@@ -140,7 +141,7 @@ public class BombermanGame extends Game {
         }
     }
 
-    public NativeFileChooser getFileCHoose() {
+    public NativeFileChooser getFileChooser() {
         return fileChooser;
     }
 
@@ -181,11 +182,11 @@ public class BombermanGame extends Game {
         // Params to decide what happens like choosing a file and cancel the process
         NativeFileChooserCallback fileChooserCallback = new NativeFileChooserCallback() {
             @Override
-            public void onFileChosen(FileHandle fileHandle) {
+            public void onFileChosen(FileHandle file) {
                 setUserChoosenMap(true);
 
                 // Read the properties files
-                String EntireText = fileHandle.readString();
+                String EntireText = file.readString();
                 // Split map properties
                 String[] linesOfText = EntireText.split("\n");
 
@@ -207,6 +208,9 @@ public class BombermanGame extends Game {
                 setUserChoosenMap(false);
             }
         };
+
+        ///Then we put the arguments in this method, so that everything comes together in the end.
+        fileChooser.chooseFile(configuration, fileChooserCallback);
     }
 
     // Converting array String into hashmap and then invoking the Game Map constructor
