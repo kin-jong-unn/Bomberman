@@ -68,6 +68,16 @@ public class MenuScreen implements Screen {
                 game.loadFileChooser();
             }
         });
+
+        // Create and add a button to view tutorial
+        TextButton goToTurorial = new TextButton("Tutorial", game.getSkin());
+        table.add(goToTurorial).width(350).row();
+        goToTurorial.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToTutorial();
+            }
+        });
     }
     
     /**

@@ -15,6 +15,8 @@ import io.github.phucfix.bombermangame.map.GameMap;
 import io.github.phucfix.bombermangame.screen.GameScreen;
 import io.github.phucfix.bombermangame.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import io.github.phucfix.bombermangame.screen.PauseScreen;
+import io.github.phucfix.bombermangame.screen.TutorialScreen;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -105,9 +107,22 @@ public class BombermanGame extends Game {
     }
 
     /**
+     * Go to pause screen
+     */
+    public void goToPauseScreen() {
+        MusicTrack.BACKGROUND2.stop();
+        MusicTrack.BACKGROUND.play();
+        this.setScreen(new PauseScreen(this));
+    }
+
+    public void goToTutorial() {
+        this.setScreen(new TutorialScreen(this));
+    }
+
+    /**
      * Goes to map selected by user
      */
-    public void goToSlectedMap() {
+    public void goToSelectedMap() {
         MusicTrack.BACKGROUND.stop();
         MusicTrack.BACKGROUND2.play();
         this.setScreen(new GameScreen(this));
@@ -226,7 +241,7 @@ public class BombermanGame extends Game {
         }
 
         this.map = new GameMap(this, coordinatesAndObjects);
-        goToSlectedMap();
+        goToSelectedMap();
     }
 
     /** Cleans up resources when the game is disposed. */
