@@ -8,6 +8,9 @@ import io.github.phucfix.bombermangame.BombermanGame;
 import java.sql.Array;
 import java.util.*;
 
+import static io.github.phucfix.bombermangame.screen.GameScreen.SCALE;
+import static io.github.phucfix.bombermangame.screen.GameScreen.TILE_SIZE_PX;
+
 /**
  * Represents the game map.
  * Holds all the objects and entities in the game.
@@ -91,15 +94,15 @@ public class GameMap {
             }
         }
 
-        this.flowers = new Flowers[28][16];
+        this.flowers = new Flowers[29][17];
         for (int i = 0; i < flowers.length; i++) {
             for (int j = 0; j < flowers[i].length; j++) {
                 this.flowers[i][j] = new Flowers(i, j);
             }
         }
 
-        this.mapWidth = flowers.length;
-        this.mapHeight = flowers[0].length;
+        this.mapWidth = flowers.length * TILE_SIZE_PX * SCALE;
+        this.mapHeight = flowers[0].length * TILE_SIZE_PX * SCALE;
     }
 
     /**
@@ -124,8 +127,9 @@ public class GameMap {
             }
         }
 
-        this.mapWidth = flowers.length;
-        this.mapHeight = flowers[0].length;
+        this.mapWidth = flowers.length * TILE_SIZE_PX * SCALE;
+        this.mapHeight = flowers[0].length * TILE_SIZE_PX * SCALE;
+        this.enemy = new Enemy(this.world, 2, 11);
         parseKeyValueToBuild(coordinatesAndObject);
     }
 
@@ -155,7 +159,10 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-        this.enemy.tick(frameTime);
+        // Fix null ptr exception
+        if (this.enemy != null) {
+            this.enemy.tick(frameTime);
+        }
         doPhysicsStep(frameTime);
     }
     

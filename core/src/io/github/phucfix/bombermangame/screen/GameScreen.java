@@ -110,13 +110,18 @@ public class GameScreen implements Screen {
         //mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY(), 6.5f,11.5f)* TILE_SIZE_PX * SCALE;
 
         /// Clamp is used to make it Responsive)
-        mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX()* TILE_SIZE_PX * SCALE,
-                (float) viewWidth/(2),
-                Math.max(map.mapWidth * TILE_SIZE_PX * SCALE- (float)viewWidth/2, viewWidth)) ;
-        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY()* TILE_SIZE_PX * SCALE,
-                (float) viewHeight/2,
-                map.mapHeight  * TILE_SIZE_PX * SCALE - (float)viewHeight/2);
-        mapCamera.update(); // This is necessary to apply the changes
+        if (map.mapWidth > viewWidth) {
+            mapCamera.position.x = MathUtils.clamp(map.getPlayer().getX() * TILE_SIZE_PX * SCALE,
+                    (float) viewWidth / (2),
+                    map.mapWidth - (float) viewWidth / 2);
+        } else {
+            mapCamera.position.x = map.mapWidth/2f;
+        }
+
+        mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY() * TILE_SIZE_PX * SCALE,
+                (float) viewHeight / 2,
+                map.mapHeight - (float) viewHeight / 2);
+        mapCamera.update(); // Apply the change
     }
     
     private void renderMap() {
@@ -175,6 +180,7 @@ public class GameScreen implements Screen {
                 }
             }
 
+            draw(spriteBatch, map.getEnemy());
             draw(spriteBatch, map.getPlayer());
         }
         
