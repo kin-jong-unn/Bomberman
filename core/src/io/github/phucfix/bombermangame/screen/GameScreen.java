@@ -179,10 +179,19 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, chest);
                 }
             }
-
-            draw(spriteBatch, map.getEnemy());
-            draw(spriteBatch, map.getPlayer());
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            float bombX = Math.round(map.getPlayer().getX());
+            float bombY = Math.round(map.getPlayer().getY());
+            map.plantBomb(bombX,bombY);
+        }
+
+        if(map.getBomb() != null) {
+            draw(spriteBatch, map.getBomb());
+        }
+        draw(spriteBatch, map.getEnemy());
+        draw(spriteBatch, map.getPlayer());
         
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

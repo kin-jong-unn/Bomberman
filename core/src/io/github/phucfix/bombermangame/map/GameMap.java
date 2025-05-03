@@ -53,6 +53,12 @@ public class GameMap {
     private Enemy enemy;
 
     private Chest chest;
+    private Bomb bomb;
+
+    // Tracks elapsed time since the bomb was planted
+    private float bombTimer = 0f;
+    // Indicates if the bomb is being monitored
+    private boolean isBombActive = false;
 
     private Wall[][] wallsOfDefaultGame;
 
@@ -73,6 +79,7 @@ public class GameMap {
         this.enemy = new Enemy(this.world, 3, 15);
         // Create a chest in the map
         this.chest = new Chest(world, 8, 15);
+        this.bomb = new Bomb(world,7,15);
         // Create flowers in a 7x7 grid
         this.wallsOfDefaultGame = new Wall[29][17];
         for (int i = 0; i < wallsOfDefaultGame.length; i++) {
@@ -130,6 +137,7 @@ public class GameMap {
         this.mapWidth = flowers.length * TILE_SIZE_PX * SCALE;
         this.mapHeight = flowers[0].length * TILE_SIZE_PX * SCALE;
         this.enemy = new Enemy(this.world, 2, 11);
+        this.bomb = new Bomb(world,7,11);
         parseKeyValueToBuild(coordinatesAndObject);
     }
 
@@ -162,6 +170,23 @@ public class GameMap {
         // Fix null ptr exception
         if (this.enemy != null) {
             this.enemy.tick(frameTime);
+        }
+        this.bomb.tick(frameTime);
+
+        // Manual timer logic for the bomb
+        if (isBombActive) {
+            bombTimer += frameTime; // Increment the timer
+
+            float playerX = Math.round(getPlayer().getX());
+            float playerY = Math.round(getPlayer().getY());
+            float bombX = Math.round(this.bomb.getX());
+            float bombY = Math.round(this.bomb.getY());
+
+            // Check if the player has moved away from the bomb
+            if ((playerX != bombX || playerY != bombY) && bombTimer > 0.5f) {
+                this.bomb.setSensor(false); // Disable the sensor, making the bomb a solid hitbox
+                isBombActive = false; // Stop monitoring the bomb
+            }
         }
         doPhysicsStep(frameTime);
     }
@@ -233,5 +258,25 @@ public class GameMap {
 
     public ArrayList<Chest> getChests() {
         return chests;
+    }
+
+    public Bomb getBomb() {
+        return bomb;
+    }
+
+    public void plantBomb(float x, float y) {
+        // Dispose of the previous bomb to free memory
+        if (this.bomb != null) {
+            this.bomb.disposeBomb();
+        }
+
+        // Create a new bomb at the specified position
+        this.bomb = new Bomb(this.world, x, y);
+
+        // Initially set the bomb as a sensor
+        this.bomb.setSensor(true);
+        // Reset the timer and activate the monitoring state
+        bombTimer = 0f;
+        isBombActive = true;
     }
 }

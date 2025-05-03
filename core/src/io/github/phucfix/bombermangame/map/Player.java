@@ -87,7 +87,7 @@ public class Player implements Drawable {
     }
 
     // Initially the Character is facing Right.
-    TextureRegion facing = SpriteSheet.CHARACTER.at(2,2);
+    TextureRegion facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
@@ -96,22 +96,22 @@ public class Player implements Drawable {
             return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.CHARACTER.at(1,2);
+            facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,2);
             return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.CHARACTER.at(2,5);
+            facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,5);
             return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.CHARACTER.at(1,5);
+            facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,5);
             return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.CHARACTER.at(2,2);
+            facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
             return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
         }
         MusicTrack.PLAYER_MOVE.stop();

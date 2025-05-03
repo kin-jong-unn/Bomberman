@@ -19,9 +19,7 @@ public enum SpriteSheet {
     // CHARACTER("character.png", 16, 32),
 
     /** The character has grid size of 16x16*/
-    CHARACTER("original-bomberman.png", 16, 16),
-    /** The obj has grid size of 16x16 */
-    OBJECTS("original-bomberman.png", 16, 16),
+    ORIGINAL_OBJECTS("original-bomberman.png", 16, 16),
     /** The basic tiles spritesheet, which has a grid size of 16x16. */
     BASIC_TILES("basictiles.png", 16, 16);
     
