@@ -34,5 +34,6 @@ public interface Drawable {
      * @return The Y coordinate of the drawable.
      */
     float getY();
-    
+
+    void destroy();
 }

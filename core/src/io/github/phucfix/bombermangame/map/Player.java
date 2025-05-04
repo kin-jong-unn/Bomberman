@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.phucfix.bombermangame.texture.Animations;
 import io.github.phucfix.bombermangame.texture.Drawable;
@@ -51,10 +48,15 @@ public class Player implements Drawable {
         // We'll use a circle shape for the player.
         CircleShape circle = new CircleShape();
         // Give the circle a radius of 0.3 tiles (the player is 0.6 tiles wide).
-        circle.setRadius(0.47f);
+        circle.setRadius(0.492f);
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
-        body.createFixture(circle, 1.0f);
+        Fixture player = body.createFixture(circle, 1.0f);
+        ///This fixture has the physics properties of the players hitbox.
+        ///Doesnt really do that much thing, this sliding
+        //        playerr.setFriction(10f); //To prevent sliding:
+        //       playerr.setRestitution(3f);// to prevent bouncing
+
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
         // Set the player as the user data of the body so we can look up the player from the body later.
@@ -128,5 +130,9 @@ public class Player implements Drawable {
     public float getY() {
         // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
         return hitbox.getPosition().y;
+    }
+
+    public void destroy() {
+
     }
 }

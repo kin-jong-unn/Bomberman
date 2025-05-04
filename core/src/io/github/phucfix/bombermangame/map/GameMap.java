@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.phucfix.bombermangame.BombermanGame;
 
-import java.sql.Array;
 import java.util.*;
 
 import static io.github.phucfix.bombermangame.screen.GameScreen.SCALE;
@@ -50,7 +49,7 @@ public class GameMap {
     // Game objects
     private Player player;
 
-    private Enemy enemy;
+    private ArrayList<Enemy> enemies;
 
     private Chest chest;
     private Bomb bomb;
@@ -60,15 +59,15 @@ public class GameMap {
     // Indicates if the bomb is being monitored
     private boolean isBombActive = false;
 
-    private Wall[][] wallsOfDefaultGame;
+    private IndestructibleWall[][] indestructibleWallsOfDefaultGame;
 
-    private BreakableWall[][] breakableWallsOfDefaultGame;
-    
+    private DestructibleWall[][] destructibleWallsOfDefaultGame;
+
     private Flowers[][] flowers;
 
     // Wall for selected map
-    private ArrayList<Wall> wallsOfSelectedMap;
-    private ArrayList<BreakableWall> breakableWallsOfSelectedMap;
+    private ArrayList<IndestructibleWall> indestructibleWallsOfSelectedMap;
+    private ArrayList<DestructibleWall> destructibleWallsOfSelectedMap;
     private ArrayList<Chest> chests;
 
     public GameMap(BombermanGame game) {
@@ -76,27 +75,27 @@ public class GameMap {
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
         this.player = new Player(this.world, 1, 15);
-        this.enemy = new Enemy(this.world, 3, 15);
+        this.enemies = new ArrayList<>();
         // Create a chest in the map
         this.chest = new Chest(world, 8, 15);
         this.bomb = new Bomb(world,7,15);
         // Create flowers in a 7x7 grid
-        this.wallsOfDefaultGame = new Wall[29][17];
-        for (int i = 0; i < wallsOfDefaultGame.length; i++) {
-            for (int j = 0; j < wallsOfDefaultGame[i].length; j++) {
+        this.indestructibleWallsOfDefaultGame = new IndestructibleWall[29][17];
+        for (int i = 0; i < indestructibleWallsOfDefaultGame.length; i++) {
+            for (int j = 0; j < indestructibleWallsOfDefaultGame[i].length; j++) {
                 // Place wall only on the boundary cells (edges)
                 if (i == 0 || i == 28 || j == 0 || j == 16 || (i % 2 == 0 && j % 2 == 0)) {
-                    this.wallsOfDefaultGame[i][j] = new Wall(this.world, i, j);
+                    this.indestructibleWallsOfDefaultGame[i][j] = new IndestructibleWall(this.world, i, j);
                 }
             }
         }
 
-        this.breakableWallsOfDefaultGame = new BreakableWall[29][17];
-        for (int i = 1; i < breakableWallsOfDefaultGame.length; i++) {
-            for (int j = 1; j < breakableWallsOfDefaultGame[i].length; j++) {
+        this.destructibleWallsOfDefaultGame = new DestructibleWall[29][17];
+        for (int i = 1; i < destructibleWallsOfDefaultGame.length; i++) {
+            for (int j = 1; j < destructibleWallsOfDefaultGame[i].length; j++) {
                 // Place walls only on the boundary cells (edges)
                 if ((i % 2 == 1 && j % 2 == 1)&& i > 8 && j > 8) {
-                    this.breakableWallsOfDefaultGame[i][j] = new BreakableWall(this.world, i, j);
+                    this.destructibleWallsOfDefaultGame[i][j] = new DestructibleWall(this.world, i, j);
                 }
             }
         }
@@ -123,8 +122,8 @@ public class GameMap {
         game.setUserChoosenMap(true);
 
         // Init game objects walls, chests and flowers
-        this.wallsOfSelectedMap = new ArrayList<>();
-        this.breakableWallsOfSelectedMap = new ArrayList<>();
+        this.indestructibleWallsOfSelectedMap = new ArrayList<>();
+        this.destructibleWallsOfSelectedMap = new ArrayList<>();
         this.chests = new ArrayList<>();
 
         this.flowers = new Flowers[21][21];
@@ -136,7 +135,7 @@ public class GameMap {
 
         this.mapWidth = flowers.length * TILE_SIZE_PX * SCALE;
         this.mapHeight = flowers[0].length * TILE_SIZE_PX * SCALE;
-        this.enemy = new Enemy(this.world, 2, 11);
+        this.enemies = new ArrayList<>();
         this.bomb = new Bomb(world,7,11);
         parseKeyValueToBuild(coordinatesAndObject);
     }
@@ -149,10 +148,10 @@ public class GameMap {
             String object = coordinatesAndObject.get(key);
 
             switch (object) {
-                case "0" -> this.wallsOfSelectedMap.add(new Wall(world, x, y));
-                case "1" -> this.breakableWallsOfSelectedMap.add(new BreakableWall(world, x, y));
+                case "0" -> this.indestructibleWallsOfSelectedMap.add(new IndestructibleWall(world, x, y));
+                case "1" -> this.destructibleWallsOfSelectedMap.add(new DestructibleWall(world, x, y));
                 case "2" -> this.player = new Player(world, x, y);
-//                case "3" -> this.chest = new Chest(world, x, y);
+                case "3" -> this.enemies.add(new Enemy(world, x, y));
 //                case "4" -> this.chest = new Chest(world, x, y);
 //                case "5" -> this.chest = new Chest(world, x, y);
 //                case "6" -> this.chest = new Chest(world, x, y);
@@ -168,8 +167,10 @@ public class GameMap {
     public void tick(float frameTime) {
         this.player.tick(frameTime);
         // Fix null ptr exception
-        if (this.enemy != null) {
-            this.enemy.tick(frameTime);
+        if (!this.enemies.isEmpty()) {
+            for (Enemy enemy : this.getEnemies()){
+                enemy.tick(frameTime);
+            }
         }
         this.bomb.tick(frameTime);
 
@@ -213,8 +214,8 @@ public class GameMap {
         this.player = player;
     }
 
-    public Enemy getEnemy() {
-        return enemy;
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
     
     /** Returns the chest on the map. */
@@ -226,13 +227,13 @@ public class GameMap {
         this.chest = chest;
     }
 
-    public List<Wall> getWallsOfDefaultGame() {
+    public List<IndestructibleWall> getIndestructibleWallsOfDefaultGame() {
         // Turn two dimensions array to list without null element
-        return Arrays.stream(wallsOfDefaultGame).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
+        return Arrays.stream(indestructibleWallsOfDefaultGame).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
     }
 
-    public List<BreakableWall> getBreakableWallsOfDefaultGame() {
-        return Arrays.stream(breakableWallsOfDefaultGame).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
+    public List<DestructibleWall> getDestructibleWallsOfDefaultGame() {
+        return Arrays.stream(destructibleWallsOfDefaultGame).filter(Objects::nonNull).flatMap(Arrays::stream).toList();
     }
     
     /** Returns the flowers on the map. */
@@ -240,20 +241,20 @@ public class GameMap {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
 
-    public ArrayList<Wall> getWallsOfSelectedMap() {
-        return wallsOfSelectedMap;
+    public ArrayList<IndestructibleWall> getIndestructibleWallsOfSelectedMap() {
+        return indestructibleWallsOfSelectedMap;
     }
 
-    public void setWallsOfSelectedMap(ArrayList<Wall> wallsOfSelectedMap) {
-        this.wallsOfSelectedMap = wallsOfSelectedMap;
+    public void setIndestructibleWallsOfSelectedMap(ArrayList<IndestructibleWall> indestructibleWallsOfSelectedMap) {
+        this.indestructibleWallsOfSelectedMap = indestructibleWallsOfSelectedMap;
     }
 
-    public ArrayList<BreakableWall> getBreakableWallsOfSelectedMap() {
-        return breakableWallsOfSelectedMap;
+    public ArrayList<DestructibleWall> getDestructibleWallsOfSelectedMap() {
+        return destructibleWallsOfSelectedMap;
     }
 
-    public void setBreakableWallsOfSelectedMap(ArrayList<BreakableWall> breakableWallsOfSelectedMap) {
-        this.breakableWallsOfSelectedMap = breakableWallsOfSelectedMap;
+    public void setBreakableWallsOfSelectedMap(ArrayList<DestructibleWall> destructibleWallsOfSelectedMap) {
+        this.destructibleWallsOfSelectedMap = destructibleWallsOfSelectedMap;
     }
 
     public ArrayList<Chest> getChests() {
@@ -267,7 +268,7 @@ public class GameMap {
     public void plantBomb(float x, float y) {
         // Dispose of the previous bomb to free memory
         if (this.bomb != null) {
-            this.bomb.disposeBomb();
+            this.bomb.destroy();
         }
 
         // Create a new bomb at the specified position
@@ -278,5 +279,9 @@ public class GameMap {
         // Reset the timer and activate the monitoring state
         bombTimer = 0f;
         isBombActive = true;
+    }
+
+    public void setEnemies(ArrayList<Enemy> enemies) {
+        this.enemies = enemies;
     }
 }

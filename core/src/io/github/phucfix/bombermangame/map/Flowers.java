@@ -33,4 +33,8 @@ public class Flowers implements Drawable {
     public float getY() {
         return y;
     }
+
+    public void destroy() {
+
+    }
 }

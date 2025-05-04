@@ -1,10 +1,7 @@
 package io.github.phucfix.bombermangame.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import io.github.phucfix.bombermangame.texture.Animations;
 import io.github.phucfix.bombermangame.texture.Drawable;
 
@@ -36,16 +33,23 @@ public class Enemy implements Drawable {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the initial position
         bodyDef.position.set(startX, startY);
+        bodyDef.awake = true;
+        bodyDef.fixedRotation = true;
+        //bodyDef.bullet = true;
+        bodyDef.active = true;
+        //        bodyDef.angularDamping = 45.0f;
+        //        bodyDef.angularVelocity = 2.0f;
         // Create body in the world using the body def
         Body body = world.createBody(bodyDef);
         // Now give the body a shape so the physics engine knows how to collide it
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(0.475f);
+        CircleShape circle = new CircleShape();
+        circle.setRadius(0.47f);
         // Attach the shape to the body as a fixture
         // Bodies can have multi fixtures, but we only need one
-        body.createFixture(circleShape, 1f);
+        Fixture enemy = body.createFixture(circle, 1f);
+        enemy.setSensor(false);
         // Done with the shape so free it
-        circleShape.dispose();
+        circle.dispose();
         // Set the player as the user data of the body so we can look up the player from the body later
         body.setUserData(this);
         return body;
@@ -56,10 +60,14 @@ public class Enemy implements Drawable {
      */
     public void tick(float frameTime) {
         elapsedTime += frameTime;
+        ///These things are responsible for the movement of the enemy.
+        float xVelocity = (float) Math.sin(this.elapsedTime) * 2;
+        float yVelocity = (float) Math.cos(this.elapsedTime) * 2;
+        this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
     public TextureRegion getCurrentAppearance() {
-        return Animations.ENEMY_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
+        return Animations.ENEMY_ANIMATION.getKeyFrame(this.elapsedTime, true);
     }
 
     @Override
@@ -74,5 +82,9 @@ public class Enemy implements Drawable {
 
     public TextureRegion demise() {
         return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, false);
+    }
+
+    public void destroy() {
+
     }
 }

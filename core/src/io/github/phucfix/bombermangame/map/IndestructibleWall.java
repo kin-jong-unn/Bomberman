@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.phucfix.bombermangame.texture.Textures;
 
-public class Wall extends Chest{
+public class IndestructibleWall extends Chest{
     /**
      * Wall has hitbox.
      * This constructor creat wall at the given position
@@ -14,12 +14,12 @@ public class Wall extends Chest{
      * @param x     The x position
      * @param y     The y position
      */
-    public Wall(World world, float x, float y) {
+    public IndestructibleWall(World world, float x, float y) {
         super(world, x, y);
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        return Textures.WALL;
+        return Textures.INDESTRUCTIBLEWALL;
     }
 }
