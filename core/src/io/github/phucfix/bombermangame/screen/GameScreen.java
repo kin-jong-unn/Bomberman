@@ -8,7 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.map.*;
 import io.github.phucfix.bombermangame.texture.Drawable;
@@ -42,6 +45,9 @@ public class GameScreen implements Screen {
     private final GameMap map;
     private final Hud hud;
     private final OrthographicCamera mapCamera;
+    private CollisionDetecter collisionDetecter;
+
+    private final Stage stage;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -60,6 +66,8 @@ public class GameScreen implements Screen {
         /// Initialising
         viewWidth = Gdx.graphics.getWidth();
         viewHeight = Gdx.graphics.getHeight();
+        Viewport viewport = new ScreenViewport(mapCamera); // Create a viewport with the camera
+        stage = new Stage(viewport, game.getSpriteBatch());
     }
 
     public static void setLost(boolean lost) {
@@ -76,7 +84,6 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || isLost) {
             game.goToMenu();
             ///We need to dispose the bloody screen properly. In order to load a new map properly.
-            //            dispose();
         } else if (Gdx.input.isKeyPressed(Input.Keys.P)) {
             game.goToPauseScreen();
         }
@@ -152,7 +159,14 @@ public class GameScreen implements Screen {
                 }
             }
 
+            for(Enemy enemy : map.getEnemies()){
+                if(enemy != null){
+                    draw(spriteBatch, enemy);
+                }
+            }
+
             draw(spriteBatch, map.getChest());
+            draw(spriteBatch, map.getPlayer());
         } else {
             for (Flowers flowers : map.getFlowers()) {
                 if (flowers != null) {
@@ -177,6 +191,14 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, chest);
                 }
             }
+
+            for(Enemy enemy : map.getEnemies()){
+                if(enemy != null){
+                    draw(spriteBatch, enemy);
+                }
+            }
+
+            draw(spriteBatch, map.getPlayer());
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {

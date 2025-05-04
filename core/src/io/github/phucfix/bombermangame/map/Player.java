@@ -22,11 +22,16 @@ public class Player implements Drawable {
     
     /** The Box2D hitbox of the player, used for position and collision detection. */
     private final Body hitbox;
+
+    private boolean isDead = false;
+
+    private TextureRegion facing;
     
     public Player(World world, float x, float y) {
         this.hitbox = createHitbox(world, x, y);
+        this.facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
     }
-    
+
     /**
      * Creates a Box2D body for the player.
      * This is what the physics engine uses to move the player around and detect collisions with other bodies.
@@ -48,17 +53,17 @@ public class Player implements Drawable {
         // We'll use a circle shape for the player.
         CircleShape circle = new CircleShape();
         // Give the circle a radius of 0.3 tiles (the player is 0.6 tiles wide).
-        circle.setRadius(0.492f);
+        circle.setRadius(0.47f);
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
-        Fixture player = body.createFixture(circle, 1.0f);
+        body.createFixture(circle, 1.0f);
         ///This fixture has the physics properties of the players hitbox.
         ///Doesnt really do that much thing, this sliding
         //        playerr.setFriction(10f); //To prevent sliding:
         //       playerr.setRestitution(3f);// to prevent bouncing
 
         // We're done with the shape, so we should dispose of it to free up memory.
-        circle.dispose();
+//        circle.dispose();
         // Set the player as the user data of the body so we can look up the player from the body later.
         body.setUserData(this);
         return body;
@@ -73,50 +78,49 @@ public class Player implements Drawable {
         this.elapsedTime += frameTime;
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        float xVelocity = 0;
-        float yVelocity = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            xVelocity = -3.5f;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            xVelocity = 3.5f;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            yVelocity = -3.5f;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            yVelocity = 3.5f;
+        if (isDead == false) {
+            float xVelocity = 0;
+            float yVelocity = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                xVelocity = -3.5f;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                xVelocity = 3.5f;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                yVelocity = -3.5f;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                yVelocity = 3.5f;
+            }
+            this.hitbox.setLinearVelocity(xVelocity, yVelocity);
         }
-
-        this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
-    // Initially the Character is facing Right.
-    TextureRegion facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the frame of the walk down animation that corresponds to the current time.
-        if ((int) this.getX() == 2 && (int) this.getY() == 15) {
+        if (isDead == false) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                MusicTrack.PLAYER_MOVE.play();
+                facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,2);
+                return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                MusicTrack.PLAYER_MOVE.play();
+                facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,5);
+                return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
+            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                MusicTrack.PLAYER_MOVE.play();
+                MusicTrack.PLAYER_MOVE.play();
+                return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                MusicTrack.PLAYER_MOVE.play();
+                facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
+                return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
+            }
             MusicTrack.PLAYER_MOVE.stop();
+        } else {
+            MusicTrack.PLAYER_MOVE.stop();
+            facing = SpriteSheet.ORIGINAL_OBJECTS.at(3,8);
             return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,2);
-            return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,5);
-            return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,5);
-            return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            MusicTrack.PLAYER_MOVE.play();
-            facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
-            return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
-        }
-        MusicTrack.PLAYER_MOVE.stop();
+
         return facing;
     }
     
@@ -133,6 +137,38 @@ public class Player implements Drawable {
     }
 
     public void destroy() {
+    }
 
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
+    public Body getHitbox() {
+        return hitbox;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public TextureRegion getFacing() {
+        return facing;
+    }
+
+    public void setFacing(TextureRegion facing) {
+        this.facing = facing;
+    }
+
+    public TextureRegion playerDies(){
+        isDead = true;
+        return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
     }
 }

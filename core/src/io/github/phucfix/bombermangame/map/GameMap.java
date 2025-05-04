@@ -59,6 +59,8 @@ public class GameMap {
     // Indicates if the bomb is being monitored
     private boolean isBombActive = false;
 
+    private CollisionDetecter collisionDetecter;
+
     private IndestructibleWall[][] indestructibleWallsOfDefaultGame;
 
     private DestructibleWall[][] destructibleWallsOfDefaultGame;
@@ -73,6 +75,11 @@ public class GameMap {
     public GameMap(BombermanGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
+
+        //setting the contactListener is needed in order to detect the collision between object .
+        this.collisionDetecter = new CollisionDetecter();
+        this.world.setContactListener(collisionDetecter);
+
         // Create a player with initial position (1, 3)
         this.player = new Player(this.world, 1, 15);
         this.enemies = new ArrayList<>();
@@ -118,8 +125,11 @@ public class GameMap {
      */
     public GameMap(BombermanGame game, HashMap<String, String> coordinatesAndObject) {
         this.game = game;
-        this.world = new World(Vector2.Zero, true);
         game.setUserChoosenMap(true);
+
+        this.world = new World(Vector2.Zero, true);
+        this.collisionDetecter = new CollisionDetecter();
+        this.world.setContactListener(collisionDetecter);
 
         // Init game objects walls, chests and flowers
         this.indestructibleWallsOfSelectedMap = new ArrayList<>();
@@ -283,5 +293,33 @@ public class GameMap {
 
     public void setEnemies(ArrayList<Enemy> enemies) {
         this.enemies = enemies;
+    }
+
+    public CollisionDetecter getCollisionDetecter() {
+        return collisionDetecter;
+    }
+
+    public void setCollisionDetecter(CollisionDetecter collisionDetecter) {
+        this.collisionDetecter = collisionDetecter;
+    }
+
+    public float getPhysicsTime() {
+        return physicsTime;
+    }
+
+    public BombermanGame getGame() {
+        return game;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public float getMapWidth() {
+        return mapWidth;
+    }
+
+    public float getMapHeight() {
+        return mapHeight;
     }
 }

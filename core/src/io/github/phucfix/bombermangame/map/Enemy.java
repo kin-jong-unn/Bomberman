@@ -33,10 +33,10 @@ public class Enemy implements Drawable {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the initial position
         bodyDef.position.set(startX, startY);
-        bodyDef.awake = true;
-        bodyDef.fixedRotation = true;
-        //bodyDef.bullet = true;
-        bodyDef.active = true;
+//        bodyDef.awake = true;
+//        bodyDef.fixedRotation = true;
+//        //bodyDef.bullet = true;
+//        bodyDef.active = true;
         //        bodyDef.angularDamping = 45.0f;
         //        bodyDef.angularVelocity = 2.0f;
         // Create body in the world using the body def
@@ -46,10 +46,10 @@ public class Enemy implements Drawable {
         circle.setRadius(0.47f);
         // Attach the shape to the body as a fixture
         // Bodies can have multi fixtures, but we only need one
-        Fixture enemy = body.createFixture(circle, 1f);
-        enemy.setSensor(false);
+        body.createFixture(circle, 1.0f);
+//        enemy.setSensor(false);
         // Done with the shape so free it
-        circle.dispose();
+//        circle.dispose();
         // Set the player as the user data of the body so we can look up the player from the body later
         body.setUserData(this);
         return body;
@@ -86,5 +86,16 @@ public class Enemy implements Drawable {
 
     public void destroy() {
 
+    }
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
+    public Body getHitbox() {
+        return hitbox;
     }
 }
