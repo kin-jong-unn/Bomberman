@@ -10,10 +10,10 @@ public class Bomb implements Drawable {
     private final float y;
     private float elapsedTime;
     private final Body hitbox;
-    private final float bombTimer;
+    public static final float BOMB_EXPLOSION_TIME = 4;
 
-    public static final int smallBombRadius = 1;
-    public static final int bigBombRadius = 2;
+    public static final int SMALL_EXPLOSION_RADIUS = 1;
+    public static final int BIG_EXPLOSION_RADIUS = 2;
 
     private boolean increasedBombRadius = false;
 
@@ -22,7 +22,6 @@ public class Bomb implements Drawable {
         this.y = y;
         this.hitbox = createHitbox(world, x, y);
         this.elapsedTime = 0;
-        this.bombTimer = 3;
     }
 
     private Body createHitbox(World world,float x, float y) {
@@ -40,7 +39,7 @@ public class Bomb implements Drawable {
         // Make the polygon a square with a side length of 1 tile.
         box.setAsBox(0.4f, 0.4f);
         // Attach the shape to the body as a fixture.
-        body.createFixture(box, 1.0f).setSensor(false);
+        body.createFixture(box, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.
         box.dispose();
         // Set the chest as the user data of the body so we can look up the chest from the body later.
@@ -48,20 +47,20 @@ public class Bomb implements Drawable {
         return body;
     }
 
-    public void tick(float frameTime) {
-        this.elapsedTime += frameTime;
+    public void tick() {
+        this.elapsedTime += 0.25f;
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
         /// If the bomb has exploded, show the explosion animation.
-        if (elapsedTime >= bombTimer) {
+        if (elapsedTime >= BOMB_EXPLOSION_TIME) {
             destroy(); // Deactivate the bomb's hitbox when the bomb explodes.
             // Show the explosion animation
-            return Animations.BOMB_BLAST.getKeyFrame(this.elapsedTime - bombTimer, false);
+            return Animations.BOMB_BLAST.getKeyFrame(this.elapsedTime - BOMB_EXPLOSION_TIME, false);
         }
         /// Shows the ticking animation, looping as long as the bomb is ticking
-        else if (elapsedTime < bombTimer) {
+        else if (elapsedTime < BOMB_EXPLOSION_TIME) {
             return Animations.BOMB_TICKING.getKeyFrame(this.elapsedTime, true);
         }
 
@@ -90,11 +89,11 @@ public class Bomb implements Drawable {
         }
     }
 
-    public int getBombRadius() {
+    public int getExplosionRadius() {
         if(isIncreasedBombRadius()) {
-            return bigBombRadius;
+            return BIG_EXPLOSION_RADIUS;
         } else {
-            return smallBombRadius;
+            return SMALL_EXPLOSION_RADIUS;
         }
     }
 

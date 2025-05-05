@@ -63,7 +63,7 @@ public class Player implements Drawable {
         //       playerr.setRestitution(3f);// to prevent bouncing
 
         // We're done with the shape, so we should dispose of it to free up memory.
-//        circle.dispose();
+        circle.dispose();
         // Set the player as the user data of the body so we can look up the player from the body later.
         body.setUserData(this);
         return body;
@@ -78,7 +78,7 @@ public class Player implements Drawable {
         this.elapsedTime += frameTime;
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        if (isDead == false) {
+        if (!isDead) {
             float xVelocity = 0;
             float yVelocity = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -96,7 +96,7 @@ public class Player implements Drawable {
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        if (isDead == false) {
+        if (!isDead) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 MusicTrack.PLAYER_MOVE.play();
                 facing = SpriteSheet.ORIGINAL_OBJECTS.at(1,2);
@@ -115,13 +115,17 @@ public class Player implements Drawable {
                 return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
             }
             MusicTrack.PLAYER_MOVE.stop();
-        } else {
-            MusicTrack.PLAYER_MOVE.stop();
-            facing = SpriteSheet.ORIGINAL_OBJECTS.at(3,8);
-            return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
-        }
 
-        return facing;
+            return facing;
+        } else {
+            this.hitbox.setActive(false);
+            MusicTrack.PLAYER_MOVE.stop();
+            TextureRegion playerDemise = Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, false);
+            if (Animations.CHARACTER_DEMISE.isAnimationFinished(this.elapsedTime)) {
+                return null; ///return null as player is destroyed
+            }
+            return playerDemise;
+        }
     }
     
     @Override
@@ -156,6 +160,7 @@ public class Player implements Drawable {
     }
 
     public void setDead(boolean dead) {
+        this.elapsedTime = 0; ///resets the elapsed time such that animation starts from 0th frame
         isDead = dead;
     }
 

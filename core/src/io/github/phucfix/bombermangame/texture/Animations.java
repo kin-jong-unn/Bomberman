@@ -67,7 +67,7 @@ public class Animations {
     /**
      * The animation for the ticking Bomb.
      */
-    public static final Animation<TextureRegion> BOMB_TICKING = new Animation<>(0.25f,
+    public static final Animation<TextureRegion> BOMB_TICKING = new Animation<>(0.3f,
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 1),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 2),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 3),
@@ -77,7 +77,7 @@ public class Animations {
     /**
      * The animaiton for bomb blast
      */
-    public static final Animation<TextureRegion> BOMB_BLAST = new Animation<>(0.13f,
+    public static final Animation<TextureRegion> BOMB_BLAST = new Animation<>(0.11f,
             SpriteSheet.ORIGINAL_OBJECTS.at(7, 3),
             SpriteSheet.ORIGINAL_OBJECTS.at(7, 8),
             SpriteSheet.ORIGINAL_OBJECTS.at(12, 3),
@@ -91,7 +91,7 @@ public class Animations {
     /**
      * The animation for breaking walls
      */
-    public static final Animation<TextureRegion> BREAK_WALL = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> DESTROY_WALL = new Animation<>(0.17f,
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 6),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 7),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 8),
@@ -109,5 +109,36 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 2),
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 3),
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 2)
+    );
+
+    /**
+     * The animation for the flower destroy
+     */
+    public static final Animation<TextureRegion> FLOWER_DESTROY = new Animation<>(0.1f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 15)
+    );
+
+    /**
+     * The animation for the enemy's demise
+     */
+    public static final Animation<TextureRegion> ENEMY_DEMISE = new Animation<>(0.25f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 9),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 11),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 12)
     );
 }
