@@ -46,7 +46,7 @@ public class Chest implements Drawable {
         // Changed the dimensions of hitbox to prevent overlapping ( Long )
         box.setAsBox(0.5f, 0.5f);
         // Attach the shape to the body as a fixture.
-        body.createFixture(box, 1.0f);
+        body.createFixture(box, 1.0f).setSensor(true);
         // We're done with the shape, so we should dispose of it to free up memory.
         box.dispose();
         // Set the chest as the user data of the body so we can look up the chest from the body later.

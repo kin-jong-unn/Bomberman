@@ -147,6 +147,10 @@ public class GameScreen implements Screen {
                 }
             }
 
+            if (map.getBomb() != null) {
+                draw(spriteBatch, map.getBomb());
+            }
+
             for (IndestructibleWall indestructibleWall : map.getIndestructibleWallsOfDefaultGame()) {
                 if (indestructibleWall != null) {
                     draw(spriteBatch, indestructibleWall);
@@ -165,6 +169,10 @@ public class GameScreen implements Screen {
                 if (flowers != null) {
                     draw(spriteBatch, flowers);
                 }
+            }
+
+            if (map.getBomb() != null ) {
+                draw(spriteBatch, map.getBomb());
             }
 
             for (IndestructibleWall indestructibleWall: map.getIndestructibleWallsOfSelectedMap()) {
@@ -194,10 +202,6 @@ public class GameScreen implements Screen {
             map.plantBomb(bombX,bombY);
         }
 
-        if(map.getBomb() != null) {
-            draw(spriteBatch, map.getBomb());
-        }
-
         for(Enemy enemy : map.getEnemies()){
             if(enemy != null){
                 draw(spriteBatch, enemy);
@@ -218,12 +222,25 @@ public class GameScreen implements Screen {
     private static void draw(SpriteBatch spriteBatch, Drawable drawable) {
         TextureRegion texture = drawable.getCurrentAppearance();
         // Drawable coordinates are in tiles, so we need to scale them to pixels
-        if(texture !=null) {
+        if (texture !=null) {
             float x = drawable.getX() * TILE_SIZE_PX * SCALE;
             float y = drawable.getY() * TILE_SIZE_PX * SCALE;
-            // Additionally scale everything by the game scale
+
+            // Calculate width and height of the texture in pixels
             float width = texture.getRegionWidth() * SCALE;
             float height = texture.getRegionHeight() * SCALE;
+
+            /// If the Drawable is a bomb and the elapsed time exceeds the explosion time,
+            /// center the explosion texture around the bomb's position
+            if (drawable instanceof Bomb bomb) {
+                if (bomb.getElapsedTime() >= Bomb.BOMB_EXPLOSION_TIME) {
+                    // Adjust x and y to center the explosion texture
+                    x -= (width / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center horizontally
+                    y -= (height / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center vertically
+                }
+            }
+
+            // Draw the texture
             spriteBatch.draw(texture, x, y, width, height);
         }
     }

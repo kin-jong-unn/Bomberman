@@ -67,7 +67,7 @@ public class Animations {
     /**
      * The animation for the ticking Bomb.
      */
-    public static final Animation<TextureRegion> BOMB_TICKING = new Animation<>(0.3f,
+    public static final Animation<TextureRegion> BOMB_TICKING = new Animation<>(0.2f,
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 1),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 2),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 3),
@@ -75,23 +75,34 @@ public class Animations {
     );
 
     /**
-     * The animaiton for bomb blast
+     * The animation for the bomb blast with bigger radius.
      */
-    public static final Animation<TextureRegion> BOMB_BLAST = new Animation<>(0.11f,
-            SpriteSheet.ORIGINAL_OBJECTS.at(7, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(7, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(12, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(12, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(12, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(7, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(7, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(7, 15)
+    public static final Animation<TextureRegion> BOMB_BLAST_LONG = new Animation<>(0.05f,
+            SpriteSheet.BOMB_BLAST_LONG.at(7, 3),
+            SpriteSheet.BOMB_BLAST_LONG.at(7, 8),
+            SpriteSheet.BOMB_BLAST_LONG.at(12, 3),
+            SpriteSheet.BOMB_BLAST_LONG.at(12, 8),
+            SpriteSheet.BOMB_BLAST_LONG.at(12, 3),
+            SpriteSheet.BOMB_BLAST_LONG.at(7, 8),
+            SpriteSheet.BOMB_BLAST_LONG.at(7, 3),
+            SpriteSheet.BOMB_BLAST_LONG.at(7, 15)
+    );
+
+    public static final Animation<TextureRegion> BOMB_BLAST_DEFAULT = new Animation<>(0.05f,
+            SpriteSheet.BOMB_BLAST_SHORT.at(6, 2),
+            SpriteSheet.BOMB_BLAST_SHORT.at(6, 7),
+            SpriteSheet.BOMB_BLAST_SHORT.at(11, 2),
+            SpriteSheet.BOMB_BLAST_SHORT.at(11, 7),
+            SpriteSheet.BOMB_BLAST_SHORT.at(11, 2),
+            SpriteSheet.BOMB_BLAST_SHORT.at(6, 7),
+            SpriteSheet.BOMB_BLAST_SHORT.at(6, 2),
+            SpriteSheet.BOMB_BLAST_SHORT.at(10, 11)
     );
 
     /**
      * The animation for breaking walls
      */
-    public static final Animation<TextureRegion> DESTROY_WALL = new Animation<>(0.17f,
+    public static final Animation<TextureRegion> DESTROY_WALL = new Animation<>(0.2f,
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 6),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 7),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 8),
@@ -109,20 +120,6 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 2),
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 3),
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 2)
-    );
-
-    /**
-     * The animation for the flower destroy
-     */
-    public static final Animation<TextureRegion> FLOWER_DESTROY = new Animation<>(0.1f,
-            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(11, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
-            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(5, 15)
     );
 
     /**

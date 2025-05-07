@@ -10,7 +10,7 @@ public class Bomb implements Drawable {
     private final float y;
     private float elapsedTime;
     private final Body hitbox;
-    public static final float BOMB_EXPLOSION_TIME = 4;
+    public static final float BOMB_EXPLOSION_TIME = 3;
 
     public static final int SMALL_EXPLOSION_RADIUS = 1;
     public static final int BIG_EXPLOSION_RADIUS = 2;
@@ -48,7 +48,7 @@ public class Bomb implements Drawable {
     }
 
     public void tick() {
-        this.elapsedTime += 0.25f;
+        this.elapsedTime += 0.017f;
     }
 
     @Override
@@ -57,7 +57,13 @@ public class Bomb implements Drawable {
         if (elapsedTime >= BOMB_EXPLOSION_TIME) {
             destroy(); // Deactivate the bomb's hitbox when the bomb explodes.
             // Show the explosion animation
-            return Animations.BOMB_BLAST.getKeyFrame(this.elapsedTime - BOMB_EXPLOSION_TIME, false);
+            if(isIncreasedBombRadius()) {
+                /// radius increases by POWER_UP
+                return Animations.BOMB_BLAST_LONG.getKeyFrame(this.elapsedTime - BOMB_EXPLOSION_TIME, false);
+            } else {
+                /// Default bomb blast radius
+                return Animations.BOMB_BLAST_DEFAULT.getKeyFrame(this.elapsedTime - BOMB_EXPLOSION_TIME, false);
+            }
         }
         /// Shows the ticking animation, looping as long as the bomb is ticking
         else if (elapsedTime < BOMB_EXPLOSION_TIME) {
@@ -103,5 +109,9 @@ public class Bomb implements Drawable {
 
     public void setIncreasedBombRadius(boolean increasedBombRadius) {
         this.increasedBombRadius = increasedBombRadius;
+    }
+
+    public float getElapsedTime() {
+        return elapsedTime;
     }
 }

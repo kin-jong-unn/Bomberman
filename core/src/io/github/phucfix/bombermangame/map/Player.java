@@ -26,10 +26,13 @@ public class Player implements Drawable {
     private boolean isDead = false;
 
     private TextureRegion facing;
+
+    private float playerSpeed;
     
     public Player(World world, float x, float y) {
         this.hitbox = createHitbox(world, x, y);
         this.facing = SpriteSheet.ORIGINAL_OBJECTS.at(2,2);
+        this.playerSpeed = 3f;
     }
 
     /**
@@ -53,7 +56,7 @@ public class Player implements Drawable {
         // We'll use a circle shape for the player.
         CircleShape circle = new CircleShape();
         // Give the circle a radius of 0.3 tiles (the player is 0.6 tiles wide).
-        circle.setRadius(0.47f);
+        circle.setRadius(0.49f);
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
         body.createFixture(circle, 1.0f);
@@ -82,13 +85,13 @@ public class Player implements Drawable {
             float xVelocity = 0;
             float yVelocity = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                xVelocity = -3.5f;
+                xVelocity = -playerSpeed;
             } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                xVelocity = 3.5f;
+                xVelocity = playerSpeed;
             } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                yVelocity = -3.5f;
+                yVelocity = -playerSpeed;
             } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                yVelocity = 3.5f;
+                yVelocity = playerSpeed;
             }
             this.hitbox.setLinearVelocity(xVelocity, yVelocity);
         }
@@ -176,4 +179,14 @@ public class Player implements Drawable {
         isDead = true;
         return Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, true);
     }
+
+    public float getPlayerSpeed() {
+        return playerSpeed;
+    }
+
+    public void setPlayerSpeed(float playerSpeed) {
+        this.playerSpeed = playerSpeed;
+    }
+
+
 }

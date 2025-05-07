@@ -186,16 +186,12 @@ public class GameMap {
         }
         this.bomb.tick();
         getDestructibleWallsOfSelectedMap().parallelStream().forEach(
-                wall -> wall.tick(0.025f)
-        );
-
-        getFlowers().parallelStream().forEach(
-                f -> f.tick(0.025f)
+                wall -> wall.tick(0.017f)
         );
 
         // Manual timer logic for the bomb
         if (isBombActive) {
-            float fixedTimeStep = 0.025f;
+            float fixedTimeStep = 0.017f;
             bombTimer += fixedTimeStep;
 
             float playerX = Math.round(getPlayer().getX());
@@ -243,18 +239,19 @@ public class GameMap {
                     }
                 });
 
-                ArrayList<Flowers> flowersToDestroy = new ArrayList<>();
+                ///  Applying the same logic for players death
+                // Round enemy's coordinates to integers
+                float playernewX = Math.round(getPlayer().getX());
+                float playernewY = Math.round(getPlayer().getY());
 
-                getFlowers().parallelStream().forEach(
-                        flower -> {
-                            float distance = Vector2.dst(bombX, bombY, flower.getX(), flower.getY());
-                            if(distance <= explosionRadius){
-                                flowersToDestroy.add(flower);
-                            }
-                        }
-                );
+                // Check if the enemy is aligned with the bomb in either X or Y direction
+                boolean isAlignedpX = playernewX == bombX && Math.abs(playernewY - bombY) <= explosionRadius;
+                boolean isAlignedpY = playernewY == bombY && Math.abs(playernewX - bombX) <= explosionRadius;
 
-                flowersToDestroy.parallelStream().forEach(Flowers::destroy);
+                // Destroy the enemy only if it's within the explosion radius and aligned with the bomb
+                if ((isAlignedpX || isAlignedpY)) {
+                    getPlayer().setDead(true);
+                }
 
                 isBombActive = false; // Stop monitoring the bomb
             }
