@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.phucfix.bombermangame.BombermanGame;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
 
 import java.util.*;
 
@@ -200,7 +201,7 @@ public class GameMap {
             float bombY = Math.round(this.bomb.getY());
 
             // Check if the player has moved away from the bomb
-            if ((playerX != bombX || playerY != bombY) && bombTimer > 0.7f && bombTimer < Bomb.BOMB_EXPLOSION_TIME) {
+            if ((playerX != bombX || playerY != bombY) && bombTimer > 0.5f && bombTimer < Bomb.BOMB_EXPLOSION_TIME) {
                 this.bomb.setSensor(false); // Disable the sensor, making the bomb a solid hitbox
             }
 
@@ -208,6 +209,7 @@ public class GameMap {
             ///to trigger the destroy() method for each of them.
             if(bombTimer >= Bomb.BOMB_EXPLOSION_TIME){
                 /// Defined explosion radius
+                MusicTrack.BOMB_EXPLOSION.play();
                 float explosionRadius = this.bomb.getExplosionRadius();
 
                 /// used parallel streams for concurrent processes
@@ -333,6 +335,7 @@ public class GameMap {
     }
 
     public void plantBomb(float x, float y) {
+        MusicTrack.BOMB_PLANT.play();
         // Dispose of the previous bomb to free memory
         if (this.bomb != null) {
             this.bomb.destroy();
