@@ -94,8 +94,8 @@ public class BombermanGame extends Game {
      */
     public void goToMenu() {
         MusicTrack.PLAYER_MOVE.stop();
-        MusicTrack.BACKGROUND2.stop();
-        MusicTrack.BACKGROUND.play();
+        MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.MENU_BGM.play();
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
     }
 
@@ -103,8 +103,8 @@ public class BombermanGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
-        MusicTrack.BACKGROUND.stop();
-        MusicTrack.BACKGROUND2.play();
+        MusicTrack.MENU_BGM.stop();
+        MusicTrack.LEVEL_THEME.play();
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
 
@@ -112,8 +112,8 @@ public class BombermanGame extends Game {
      * Go to pause screen
      */
     public void goToPauseScreen() {
-        MusicTrack.BACKGROUND2.stop();
-        MusicTrack.BACKGROUND.play();
+        MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.MENU_BGM.play();
         this.setScreen(new PauseScreen(this));
     }
 
@@ -125,8 +125,8 @@ public class BombermanGame extends Game {
      * Goes to map selected by user
      */
     public void goToSelectedMap() {
-        MusicTrack.BACKGROUND.stop();
-        MusicTrack.BACKGROUND2.play();
+        MusicTrack.MENU_BGM.stop();
+        MusicTrack.LEVEL_THEME.play();
         this.setScreen(new GameScreen(this));
     }
 

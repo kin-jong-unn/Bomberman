@@ -12,17 +12,20 @@ import com.badlogic.gdx.audio.Music;
  * Feel free to add your own music tracks and use them in the game!
  */
 public enum MusicTrack {
-    
-    BACKGROUND("background.mp3", 0.2f),
-    PLAYER_MOVE("running-in-grass-sound.mp3", 0.3f),
-    BACKGROUND2("background2.mp3", 0.2f);
-    
+
+    MENU_BGM("menu-bgm.mp3", 0.15f,true),
+    PLAYER_MOVE("running-in-grass-sound.mp3", 0.5f,true),
+    LEVEL_THEME("level-theme.mp3", 0.15f,true),
+    PLAYER_DEMISE("player-demise.mp3", 0.15f,false),
+    BOMB_PLANT("bomb-plant-sfx.mp3",0.15f,false),
+    BOMB_EXPLOSION("bomb-explosion-sfx.mp3",0.15f,false);
+
     /** The music file owned by this variant. */
     private final Music music;
     
-    MusicTrack(String fileName, float volume) {
+    MusicTrack(String fileName, float volume, boolean loop) {
         this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
-        this.music.setLooping(true);
+        this.music.setLooping(loop);
         this.music.setVolume(volume);
     }
     
