@@ -79,14 +79,45 @@ public class BombermanGame extends Game {
         // Load UI Skin
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
 
-        // Create new map, or can load map from file instead
-        this.map = new GameMap(this);
 
-        // Play some background music
-        //MusicTrack.BACKGROUND.play();
+        // Load default map from "map-1.properties"
+        loadDefaultMap();
 
         // Navigate to the menu screen
         goToMenu();
+    }
+
+    /**
+     * Loads the default map from "map-1.properties" in /maps
+     */
+    private void loadDefaultMap() {
+        /// By the same logic as in doYourMagic()
+        FileHandle defaultMapFile = Gdx.files.internal("maps/map-1.properties");
+        String mapContent = defaultMapFile.readString();
+        String[] linesOfText = mapContent.split("\n");
+
+        coordinatesAndObjects.clear(); // Clear any previous data
+
+        for (String line : linesOfText) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            String[] keyValue = line.split("=");
+            coordinatesAndObjects.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+
+        // Initialize the GameMap object with default map
+        this.map = new GameMap(this, coordinatesAndObjects);
+    }
+
+    /**
+     * Switches to the game screen and starts the default map.
+     */
+    public void startDefaultMap() {
+        MusicTrack.MENU_BGM.stop();
+        MusicTrack.LEVEL_THEME.play();
+        this.setScreen(new GameScreen(this));
     }
 
     /**
@@ -201,7 +232,6 @@ public class BombermanGame extends Game {
         NativeFileChooserCallback fileChooserCallback = new NativeFileChooserCallback() {
             @Override
             public void onFileChosen(FileHandle file) {
-                setUserChoosenMap(true);
 
                 // Read the properties files
                 String EntireText = file.readString();
@@ -216,13 +246,11 @@ public class BombermanGame extends Game {
             @Override
             public void onCancellation() {
                 System.out.println("Cancel");
-                setUserChoosenMap(false);
             }
 
             @Override
             public void onError(Exception e) {
                 System.out.println("Error " + e);
-                setUserChoosenMap(false);
             }
         };
 
@@ -233,6 +261,8 @@ public class BombermanGame extends Game {
     // Converting array String into hashmap and then invoking the Game Map constructor
     // The Constructor will parse hashmap to GameMap, creating object in that map
     public void doYourMagic(String[] linesOfText) {
+        /// VVI to clear the previous objects.
+        coordinatesAndObjects.clear();
         for (String line : linesOfText) {
             line = line.trim();
             if (line.isEmpty() || line.startsWith("#")) {
