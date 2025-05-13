@@ -36,7 +36,7 @@ public class PauseScreen implements Screen {
         table.add(new Label("Bomberman", game.getSkin(), "title")).padBottom(80).row();
         table.add(new Label("Game is paused", game.getSkin(), "title")).padBottom(80).row();
 
-        TextButton resumeButton = new TextButton("resume", game.getSkin());
+        TextButton resumeButton = new TextButton("Resume", game.getSkin());
         table.add(resumeButton).width(200).row();
         resumeButton.addListener(new ChangeListener() {
             @Override

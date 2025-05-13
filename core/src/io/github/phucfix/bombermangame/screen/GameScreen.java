@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
 import io.github.phucfix.bombermangame.map.*;
 import io.github.phucfix.bombermangame.texture.Drawable;
 
@@ -84,8 +85,12 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || isLost) {
             game.goToMenu();
             ///We need to dispose the bloody screen properly. In order to load a new map properly.
-        } else if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            MusicTrack.GAME_PAUSE.play();
             game.goToPauseScreen();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            MusicTrack.GAME_PAUSE.play();
+            game.goToTutorial();
         }
         
         // Clear the previous frame from the screen, or else the picture smears

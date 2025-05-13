@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -78,6 +79,13 @@ public class MenuScreen implements Screen {
                 game.goToTutorial();
             }
         });
+
+        Label tipLabel = new Label("Press ENTER for Quick Start", game.getSkin());
+        table.add(tipLabel).padTop(30).row();
+        Slider volumeSlider = new Slider(0,1,0.1f,false,game.getSkin());
+        volumeSlider.setAnimateDuration(0.8f);
+        volumeSlider.setVisualPercent(0.6f);
+        table.add(volumeSlider).padTop(30).row();
     }
     
     /**

@@ -145,11 +145,11 @@ public class BombermanGame extends Game {
      */
     public void goToPauseScreen() {
         MusicTrack.LEVEL_THEME.stop();
-        MusicTrack.MENU_BGM.play();
         this.setScreen(new PauseScreen(this));
     }
 
     public void goToTutorial() {
+        MusicTrack.LEVEL_THEME.stop();
         this.setScreen(new TutorialScreen(this));
     }
 
