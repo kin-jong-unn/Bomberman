@@ -19,7 +19,8 @@ public enum MusicTrack {
     LEVEL_THEME("level-theme.mp3", 0.15f,true),
     PLAYER_DEMISE("player-demise.mp3", 0.15f,false),
     BOMB_PLANT("bomb-plant-sfx.mp3",0.15f,false),
-    BOMB_EXPLOSION("bomb-explosion-sfx.mp3",0.15f,false);
+    BOMB_EXPLOSION("bomb-explosion-sfx.mp3",0.15f,false),
+    POWERUP_TAKEN("con-bomb-power-up.mp3",0.15f,false);
 
     /** The music file owned by this variant. */
     private final Music music;

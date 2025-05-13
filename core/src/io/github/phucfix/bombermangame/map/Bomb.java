@@ -16,6 +16,7 @@ public class Bomb implements Drawable {
     public static final int BIG_EXPLOSION_RADIUS = 2;
 
     private boolean increasedBombRadius = false;
+    private boolean concurrentBombs = false;
 
     public Bomb(World world, float x, float y) {
         this.x = x;
@@ -113,5 +114,13 @@ public class Bomb implements Drawable {
 
     public float getElapsedTime() {
         return elapsedTime;
+    }
+
+    public boolean isConcurrentBombs() {
+        return concurrentBombs;
+    }
+
+    public void setConcurrentBombs(boolean concurrentBombs) {
+        this.concurrentBombs = concurrentBombs;
     }
 }

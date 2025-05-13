@@ -52,6 +52,13 @@ public class GameMap {
 
     private ArrayList<Enemy> enemies;
 
+    private final Flowers[][] flowers;
+    ///Walls of the Selected Map
+    private ArrayList<IndestructibleWall> indestructibleWalls;
+    private ArrayList<DestructibleWall> destructibleWalls;
+    private ArrayList<Chest> chests;
+    private ArrayList<ConcurrentBombPowerUp> concurrentBombPowerUps;
+
 
     private Bomb bomb;
 
@@ -61,12 +68,6 @@ public class GameMap {
     private boolean isBombActive = false;
 
     private CollisionDetecter collisionDetecter;
-
-    private final Flowers[][] flowers;
-
-    private ArrayList<IndestructibleWall> indestructibleWalls;
-    private ArrayList<DestructibleWall> destructibleWalls;
-    private ArrayList<Chest> chests;
 
     /**
      * Constructor for map choosen by user
@@ -87,6 +88,7 @@ public class GameMap {
         this.indestructibleWalls = new ArrayList<>();
         this.destructibleWalls = new ArrayList<>();
         this.chests = new ArrayList<>();
+        this.concurrentBombPowerUps = new ArrayList<>();
 
         this.flowers = new Flowers[21][21];
         for (int i = 0; i < flowers.length; i++) {
@@ -115,6 +117,10 @@ public class GameMap {
                 case "3" -> this.enemies.add(new Enemy(world, x, y));
 //                case "4" -> this.chest = new Chest(world, x, y);
 //                case "5" -> this.chest = new Chest(world, x, y);
+                case "5" -> {
+                    this.concurrentBombPowerUps.add(new ConcurrentBombPowerUp(world, x, y));
+                    this.destructibleWalls.add(new DestructibleWall(world,x,y));
+                }
 //                case "6" -> this.chest = new Chest(world, x, y);
             }
         }
@@ -139,6 +145,17 @@ public class GameMap {
         if(this.bomb !=null) {
             this.bomb.tick();
         }
+
+        getConcurrentBombPowerUps().forEach(power -> {
+                    float player_X = Math.round(getPlayer().getX());
+                    float player_Y = Math.round(getPlayer().getY());
+                    if (power.getX() == player_X && power.getY() == player_Y && !power.isPowerTaken()) {
+                        MusicTrack.POWERUP_TAKEN.play();
+                        power.setPowerTaken(true);
+                        power.destroy();
+                        getPlayer().setPlayerSpeed(5f);
+                    }
+        });
 
         getDestructibleWalls().parallelStream().forEach(
                 wall -> wall.tick(0.017f)
@@ -205,7 +222,7 @@ public class GameMap {
                 boolean isAlignedpY = playernewY == bombY && Math.abs(playernewX - bombX) <= explosionRadius;
 
                 // Destroy the enemy only if it's within the explosion radius and aligned with the bomb
-                if ((isAlignedpX || isAlignedpY)) {
+                if ((isAlignedpX || isAlignedpY) && !getPlayer().isDead()) {
                     getPlayer().setDead(true);
                 }
 
@@ -317,5 +334,13 @@ public class GameMap {
 
     public float getMapHeight() {
         return mapHeight;
+    }
+
+    public ArrayList<ConcurrentBombPowerUp> getConcurrentBombPowerUps() {
+        return concurrentBombPowerUps;
+    }
+
+    public void setConcurrentBombPowerUps(ArrayList<ConcurrentBombPowerUp> concurrentBombPowerUps) {
+        this.concurrentBombPowerUps = concurrentBombPowerUps;
     }
 }

@@ -148,6 +148,13 @@ public class GameScreen implements Screen {
                 draw(spriteBatch, flowers);
             }
         }
+
+        for(ConcurrentBombPowerUp powerUp : map.getConcurrentBombPowerUps()){
+            if(powerUp!= null){
+                draw(spriteBatch, powerUp);
+            }
+        }
+
         if(map.getBomb() != null) {
             draw(spriteBatch, map.getBomb());
         }
@@ -173,7 +180,7 @@ public class GameScreen implements Screen {
         }
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead()){
             float bombX = Math.round(map.getPlayer().getX());
             float bombY = Math.round(map.getPlayer().getY());
             map.plantBomb(bombX,bombY);
@@ -190,6 +197,8 @@ public class GameScreen implements Screen {
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
     }
+
+
 
 
     /**
