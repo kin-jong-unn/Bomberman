@@ -128,14 +128,20 @@ public class GameScreen implements Screen {
                     map.mapWidth - (float) viewWidth / 2);
         } else {
             mapCamera.position.x = map.mapWidth/2f;
-            if(map.getMapHeight() > viewHeight) {
-                mapCamera.position.y = MathUtils.clamp(map.getPlayer().getY() * TILE_SIZE_PX * SCALE,
-                        (float) viewHeight / 2,
-                        map.mapHeight - (float) viewHeight / 2);
-            } else {
-                mapCamera.position.y = map.mapHeight / 2f;
-            }
         }
+
+        /// Vertical centering
+        if (map.getMapHeight() > viewHeight) {
+            mapCamera.position.y = MathUtils.clamp(
+                    map.getPlayer().getY() * TILE_SIZE_PX * SCALE,
+                    (float) viewHeight / 2,
+                    map.mapHeight - (float) viewHeight / 2
+            );
+        } else {
+            mapCamera.position.y = map.mapHeight / 2f;
+        }
+
+
         mapCamera.update(); // Apply the change
     }
 
@@ -160,8 +166,18 @@ public class GameScreen implements Screen {
             }
         }
 
-        if(map.getBomb() != null) {
-            draw(spriteBatch, map.getBomb());
+        for(BombBlastPowerUp powerUp : map.getBombBlastPowerUp()){
+            if(powerUp!= null){
+                draw(spriteBatch, powerUp);
+            }
+        }
+
+        if(!map.getBombs().isEmpty()) {
+            for(Bomb bomb : map.getBombs()){
+                if(bomb!= null){
+                    draw(spriteBatch, bomb);
+                }
+            }
         }
 
         if(!map.getDestructibleWalls().isEmpty()) {
@@ -185,7 +201,7 @@ public class GameScreen implements Screen {
         }
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead()){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead() && Bomb.getActiveBombs() < Bomb.getMaxConcurrentBombs()){
             float bombX = Math.round(map.getPlayer().getX());
             float bombY = Math.round(map.getPlayer().getY());
             map.plantBomb(bombX,bombY);
@@ -226,7 +242,7 @@ public class GameScreen implements Screen {
             /// If the Drawable is a bomb and the elapsed time exceeds the explosion time,
             /// center the explosion texture around the bomb's position
             if (drawable instanceof Bomb bomb) {
-                if (bomb.getElapsedTime() >= Bomb.BOMB_EXPLOSION_TIME) {
+                if (bomb.getBombTimer() >= Bomb.BOMB_EXPLOSION_TIME) {
                     // Adjust x and y to center the explosion texture
                     x -= (width / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center horizontally
                     y -= (height / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center vertically

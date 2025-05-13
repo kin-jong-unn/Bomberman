@@ -18,6 +18,7 @@ import io.github.phucfix.bombermangame.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import io.github.phucfix.bombermangame.screen.PauseScreen;
 import io.github.phucfix.bombermangame.screen.TutorialScreen;
+import io.github.phucfix.bombermangame.map.Bomb;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -263,6 +264,8 @@ public class BombermanGame extends Game {
     public void doYourMagic(String[] linesOfText) {
         /// VVI to clear the previous objects.
         coordinatesAndObjects.clear();
+        Bomb.setActiveBombs(0);
+        Bomb.setMaxConcurrentBombs(1);
         for (String line : linesOfText) {
             line = line.trim();
             if (line.isEmpty() || line.startsWith("#")) {
