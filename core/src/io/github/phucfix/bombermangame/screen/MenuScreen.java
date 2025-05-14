@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -36,6 +37,7 @@ public class MenuScreen implements Screen {
      */
     public MenuScreen(BombermanGame game) {
         this.game = game;
+        GameScreen.setGameWon(false);
 
         var camera = new OrthographicCamera();
         camera.zoom = 1.4f; // Set camera zoom for a closer view
@@ -52,20 +54,37 @@ public class MenuScreen implements Screen {
 
         // Create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("Start", game.getSkin());
-        table.add(goToGameButton).width(200).row();
+        table.add(goToGameButton).width(220).row();
         goToGameButton.addListener(new ChangeListener() {
                                        @Override
                                        public void changed(ChangeEvent event, Actor actor) {
+                                           MusicTrack.LEVEL_THEME.play();
                                            game.loadDefaultMap();// Change to the game screen when button is pressed
                                        }
                                    });
 
-        // Create and add a button to choose a map
+        TextButton loadAChallenge = new TextButton("Challenge", game.getSkin());
+        table.add(loadAChallenge).width(300).row();
+        loadAChallenge.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                ///This method will open the filechooser window
+                MusicTrack.LEVEL_THEME.play();
+                game.loadChallenge();
+            }
+        });
+
+        /** (Aryan)
+         * To choose a Map, the user needs a button, that button needs to open the filechooser window.
+         */
         TextButton goToFileChooserButton = new TextButton("Choose your Map", game.getSkin());
         table.add(goToFileChooserButton).width(350).row();
         goToFileChooserButton.addListener(new ChangeListener() {
+
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                ///This method will open the filechooser window
                 game.loadFileChooser();
             }
         });
@@ -96,6 +115,7 @@ public class MenuScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            MusicTrack.LEVEL_THEME.play();
             game.loadDefaultMap();
         }
         float frameTime = Math.min(deltaTime, 0.250f); // Cap frame time to 250ms to prevent spiral of death        ScreenUtils.clear(Color.BLACK);

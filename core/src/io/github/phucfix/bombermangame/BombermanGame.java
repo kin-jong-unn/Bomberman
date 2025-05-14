@@ -35,6 +35,8 @@ public class BombermanGame extends Game {
 
     /** The game's UI skin. This is used to style the game's UI elements. */
     private Skin skin;
+
+    private boolean isMultiLevelSelected;
     
     /**
      * The file chooser for loading map files from the user's computer.
@@ -90,6 +92,7 @@ public class BombermanGame extends Game {
      */
     public void loadDefaultMap() {
         /// By the same logic as in doYourMagic()
+        isMultiLevelSelected = false;
         coordinatesAndObjects.clear();
         FileHandle defaultMapFile = Gdx.files.internal("maps/map-1.properties");
         String mapContent = defaultMapFile.readString();
@@ -109,8 +112,34 @@ public class BombermanGame extends Game {
         // Initialize the GameMap object with default map
         this.map = new GameMap(this, coordinatesAndObjects);
         MusicTrack.MENU_BGM.stop();
-        MusicTrack.LEVEL_THEME.play();
         this.setScreen(new GameScreen(this));
+    }
+
+    public void loadChallenge() {
+        /// By the same logic as in doYourMagic()
+        isMultiLevelSelected = true;
+        coordinatesAndObjects.clear();
+        FileHandle defaultMapFile = Gdx.files.internal("maps/map-2.properties");
+        String mapContent = defaultMapFile.readString();
+        String[] linesOfText = mapContent.split("\n");
+
+        coordinatesAndObjects.clear();// Clear any previous data
+        for (String line : linesOfText) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+
+            }
+            String[] keyValue = line.split("=");
+            coordinatesAndObjects.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+
+        // Initialize the GameMap object with default map
+        this.map = new GameMap(this, coordinatesAndObjects);
+        MusicTrack.MENU_BGM.stop();        MusicTrack.LEVEL_THEME.play();
+        this.setScreen(new GameScreen(this));
+
+
     }
 
     /**
@@ -120,6 +149,7 @@ public class BombermanGame extends Game {
         MusicTrack.PLAYER_MOVE1.stop();
         MusicTrack.PLAYER_MOVE2.stop();
         MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.LEVEL_THEME2.stop();
         MusicTrack.MENU_BGM.play();
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
     }
@@ -143,6 +173,7 @@ public class BombermanGame extends Game {
 
     public void goToLostScreen(){
         MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.LEVEL_THEME2.stop();
         MusicTrack.PLAYER_MOVE1.stop();
         MusicTrack.PLAYER_MOVE2.stop();
         MusicTrack.GAME_OVER.play();
@@ -290,10 +321,19 @@ public class BombermanGame extends Game {
 
     public void goToVictoryScreen(){
         MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.LEVEL_THEME2.stop();
         MusicTrack.PLAYER_MOVE1.stop();
         MusicTrack.PLAYER_MOVE2.stop();
-        MusicTrack.GAME_OVER.play();
+        MusicTrack.LEVEL_COMPLETED.play();
         this.setScreen(new VictoryScreen(this));
 
+    }
+
+    public boolean isMultiLevelSelected() {
+        return isMultiLevelSelected;
+    }
+
+    public void setMultiLevelSelected(boolean multiLevelSelected) {
+        isMultiLevelSelected = multiLevelSelected;
     }
 }

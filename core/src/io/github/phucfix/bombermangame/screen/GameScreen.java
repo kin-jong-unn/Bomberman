@@ -42,6 +42,7 @@ public class GameScreen implements Screen {
 
     private final BombermanGame game;
     private static boolean gameLost;
+    private static boolean gameWon;
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
@@ -177,13 +178,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        if(!map.getDestructibleWalls().isEmpty()) {
-            for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
-                if (destructibleWall != null) {
-                    draw(spriteBatch, destructibleWall);
-                }
-            }
-        }
+        draw(spriteBatch, map.getExit());
 
         for(IndestructibleWall indestructibleWall : map.getIndestructibleWalls()){
             if(indestructibleWall != null){
@@ -191,7 +186,13 @@ public class GameScreen implements Screen {
             }
         }
 
-        draw(spriteBatch, map.getExit());
+        if(!map.getDestructibleWalls().isEmpty()) {
+            for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
+                if (destructibleWall != null) {
+                    draw(spriteBatch, destructibleWall);
+                }
+            }
+        }
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead() && Bomb.getActiveBombs() < Bomb.getMaxConcurrentBombs()){
@@ -293,5 +294,13 @@ public class GameScreen implements Screen {
 
     public static void setGameLost(boolean gameLost) {
         GameScreen.gameLost = gameLost;
+    }
+
+    public static boolean isGameWon() {
+        return gameWon;
+    }
+
+    public static void setGameWon(boolean gameWon) {
+        GameScreen.gameWon = gameWon;
     }
 }

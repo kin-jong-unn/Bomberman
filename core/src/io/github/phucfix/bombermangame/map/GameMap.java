@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.screen.GameScreen;
 
 import java.util.*;
 
@@ -86,7 +87,7 @@ public class GameMap {
         //Initialized the walls, chests and Breakable walls, and flowers
         this.indestructibleWalls = new ArrayList<>();
         this.destructibleWalls = new ArrayList<>();
-        this.exit = new Exit(world, 1, 11);
+        this.exit = new Exit(world, 10, 13);
         this.concurrentBombPowerUps = new ArrayList<>();
         this.bombBlastPowerUp = new ArrayList<>();
         this.enemies = new ArrayList<>();
@@ -188,18 +189,26 @@ public class GameMap {
                         MusicTrack.POWERUP_TAKEN.play();
                         power.setPowerTaken(true);
                         power.destroy();
-                        getPlayer().setPlayerSpeed(5f);
+                        Bomb.incrementCurrentBombRadius();
                     }
                 }
         );
 
         float player_X1 = Math.round(getPlayer().getX());
         float player_Y1 = Math.round(getPlayer().getY());
-        if(getExit().getX() == player_X1 && getExit().getY() == player_Y1){
-            MusicTrack.PLAYER_MOVE1.stop();
-            MusicTrack.PLAYER_MOVE2.stop();
-            MusicTrack.POWERUP_TAKEN.play();
-            game.goToVictoryScreen();
+        if(game.isMultiLevelSelected()){
+            if(getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
+                MusicTrack.LEVEL_THEME.stop();
+                MusicTrack.LEVEL_THEME2.play();
+                game.loadDefaultMap();
+            }
+        } else {
+            if(getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
+                GameScreen.setGameWon(true);
+                MusicTrack.PLAYER_MOVE1.stop();
+                MusicTrack.PLAYER_MOVE2.stop();
+                game.goToVictoryScreen();
+            }
         }
 
         getDestructibleWalls()
@@ -217,7 +226,7 @@ public class GameMap {
                 float bombY = Math.round(bomb.getY());
 
                 /// Check if the player has moved away from the bomb
-                if ((playerX != bombX || playerY != bombY) && bomb.getBombTimer() > 0.5f && bomb.getBombTimer() < Bomb.BOMB_EXPLOSION_TIME) {
+                if ((playerX != bombX || playerY != bombY) && bomb.getBombTimer() > 0.7f && bomb.getBombTimer() < Bomb.BOMB_EXPLOSION_TIME) {
                     bomb.setSensor(false); // Disable the sensor, making the bomb a solid hitbox
                 }
 
@@ -227,7 +236,7 @@ public class GameMap {
                 if (bomb.getBombTimer() >= Bomb.BOMB_EXPLOSION_TIME) {
                     /// Defined explosion radius
                     MusicTrack.BOMB_EXPLOSION.play();
-                    float explosionRadius = bomb.getExplosionRadius();
+                    float explosionRadius = bomb.getCurrentBombRadius();
 
                     /// used parallel streams for concurrent processes
                     getDestructibleWalls()

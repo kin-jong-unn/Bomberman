@@ -78,14 +78,14 @@ public class Animations {
      * The animation for the bomb blast with bigger radius.
      */
     public static final Animation<TextureRegion> BOMB_BLAST_LONG = new Animation<>(0.05f,
-            SpriteSheet.BOMB_BLAST_LONG.at(7, 3),
-            SpriteSheet.BOMB_BLAST_LONG.at(7, 8),
-            SpriteSheet.BOMB_BLAST_LONG.at(12, 3),
-            SpriteSheet.BOMB_BLAST_LONG.at(12, 8),
-            SpriteSheet.BOMB_BLAST_LONG.at(12, 3),
-            SpriteSheet.BOMB_BLAST_LONG.at(7, 8),
-            SpriteSheet.BOMB_BLAST_LONG.at(7, 3),
-            SpriteSheet.BOMB_BLAST_LONG.at(7, 15)
+            SpriteSheet.BOMB_BLAST_LONG.at(5, 1),
+            SpriteSheet.BOMB_BLAST_LONG.at(5, 6),
+            SpriteSheet.BOMB_BLAST_LONG.at(10, 1),
+            SpriteSheet.BOMB_BLAST_LONG.at(10, 6),
+            SpriteSheet.BOMB_BLAST_LONG.at(10, 1),
+            SpriteSheet.BOMB_BLAST_LONG.at(5, 6),
+            SpriteSheet.BOMB_BLAST_LONG.at(5, 1),
+            SpriteSheet.BOMB_BLAST_LONG.at(10, 11)
     );
 
     public static final Animation<TextureRegion> BOMB_BLAST_DEFAULT = new Animation<>(0.05f,
