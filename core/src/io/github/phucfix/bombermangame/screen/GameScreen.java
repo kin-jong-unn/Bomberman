@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
     public static int viewWidth, viewHeight;
 
     private final BombermanGame game;
-    private static boolean isLost;
+    private static boolean gameLost;
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(BombermanGame game) {
         this.game = game;
-        isLost = false;
+        gameLost = false;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
         this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), game);
@@ -71,9 +71,6 @@ public class GameScreen implements Screen {
         stage = new Stage(viewport, game.getSpriteBatch());
     }
 
-    public static void setLost(boolean lost) {
-        isLost = true;
-    }
     
     /**
      * The render method is called every frame to render the game.
@@ -82,7 +79,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || isLost) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || gameLost) {
             game.goToMenu();
             ///We need to dispose the bloody screen properly. In order to load a new map properly.
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
@@ -194,11 +191,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        for(Chest chest : map.getChests()){
-            if(chest != null){
-                draw(spriteBatch, chest);
-            }
-        }
+        draw(spriteBatch, map.getExit());
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead() && Bomb.getActiveBombs() < Bomb.getMaxConcurrentBombs()){
@@ -213,7 +206,11 @@ public class GameScreen implements Screen {
             }
         }
 
-        draw(spriteBatch, map.getPlayer());
+        if(map.getPlayer().isDeathAnimationFinished()){
+            game.goToLostScreen();
+        } else {
+            draw(spriteBatch, map.getPlayer());
+        }
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
@@ -290,4 +287,11 @@ public class GameScreen implements Screen {
     public void dispose() {
     }
 
+    public static boolean isGameLost() {
+        return gameLost;
+    }
+
+    public static void setGameLost(boolean gameLost) {
+        GameScreen.gameLost = gameLost;
+    }
 }

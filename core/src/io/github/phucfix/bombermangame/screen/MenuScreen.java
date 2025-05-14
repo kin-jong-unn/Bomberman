@@ -54,11 +54,11 @@ public class MenuScreen implements Screen {
         TextButton goToGameButton = new TextButton("Start", game.getSkin());
         table.add(goToGameButton).width(200).row();
         goToGameButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.startDefaultMap();
-            }
-        });
+                                       @Override
+                                       public void changed(ChangeEvent event, Actor actor) {
+                                           game.loadDefaultMap();// Change to the game screen when button is pressed
+                                       }
+                                   });
 
         // Create and add a button to choose a map
         TextButton goToFileChooserButton = new TextButton("Choose your Map", game.getSkin());
@@ -96,7 +96,7 @@ public class MenuScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            game.goToGame();
+            game.loadDefaultMap();
         }
         float frameTime = Math.min(deltaTime, 0.250f); // Cap frame time to 250ms to prevent spiral of death        ScreenUtils.clear(Color.BLACK);
         ScreenUtils.clear(Color.BLACK);

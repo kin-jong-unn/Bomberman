@@ -13,11 +13,8 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserIntent;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
 import io.github.phucfix.bombermangame.map.GameMap;
-import io.github.phucfix.bombermangame.screen.GameScreen;
-import io.github.phucfix.bombermangame.screen.MenuScreen;
+import io.github.phucfix.bombermangame.screen.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
-import io.github.phucfix.bombermangame.screen.PauseScreen;
-import io.github.phucfix.bombermangame.screen.TutorialScreen;
 import io.github.phucfix.bombermangame.map.Bomb;
 
 import java.io.File;
@@ -82,7 +79,7 @@ public class BombermanGame extends Game {
 
 
         // Load default map from "map-1.properties"
-        loadDefaultMap();
+//        loadDefaultMap();
 
         // Navigate to the menu screen
         goToMenu();
@@ -91,13 +88,14 @@ public class BombermanGame extends Game {
     /**
      * Loads the default map from "map-1.properties" in /maps
      */
-    private void loadDefaultMap() {
+    public void loadDefaultMap() {
         /// By the same logic as in doYourMagic()
+        coordinatesAndObjects.clear();
         FileHandle defaultMapFile = Gdx.files.internal("maps/map-1.properties");
         String mapContent = defaultMapFile.readString();
         String[] linesOfText = mapContent.split("\n");
 
-        coordinatesAndObjects.clear(); // Clear any previous data
+        coordinatesAndObjects.clear();// Clear any previous data
 
         for (String line : linesOfText) {
             line = line.trim();
@@ -110,12 +108,6 @@ public class BombermanGame extends Game {
 
         // Initialize the GameMap object with default map
         this.map = new GameMap(this, coordinatesAndObjects);
-    }
-
-    /**
-     * Switches to the game screen and starts the default map.
-     */
-    public void startDefaultMap() {
         MusicTrack.MENU_BGM.stop();
         MusicTrack.LEVEL_THEME.play();
         this.setScreen(new GameScreen(this));
@@ -147,6 +139,14 @@ public class BombermanGame extends Game {
     public void goToPauseScreen() {
         MusicTrack.LEVEL_THEME.stop();
         this.setScreen(new PauseScreen(this));
+    }
+
+    public void goToLostScreen(){
+        MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.PLAYER_MOVE1.stop();
+        MusicTrack.PLAYER_MOVE2.stop();
+        MusicTrack.GAME_OVER.play();
+        this.setScreen(new LostScreen(this));
     }
 
     public void goToTutorial() {
@@ -286,5 +286,14 @@ public class BombermanGame extends Game {
         getScreen().dispose(); // Dispose the current screen
         spriteBatch.dispose(); // Dispose the spriteBatch
         skin.dispose(); // Dispose the skin
+    }
+
+    public void goToVictoryScreen(){
+        MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.PLAYER_MOVE1.stop();
+        MusicTrack.PLAYER_MOVE2.stop();
+        MusicTrack.GAME_OVER.play();
+        this.setScreen(new VictoryScreen(this));
+
     }
 }

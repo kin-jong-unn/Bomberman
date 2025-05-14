@@ -56,7 +56,7 @@ public class GameMap {
     ///Walls of the Selected Map
     private ArrayList<IndestructibleWall> indestructibleWalls;
     private ArrayList<DestructibleWall> destructibleWalls;
-    private ArrayList<Chest> chests;
+    private Exit exit;
     private ArrayList<ConcurrentBombPowerUp> concurrentBombPowerUps;
     private ArrayList<BombBlastPowerUp> bombBlastPowerUp;
 
@@ -86,7 +86,7 @@ public class GameMap {
         //Initialized the walls, chests and Breakable walls, and flowers
         this.indestructibleWalls = new ArrayList<>();
         this.destructibleWalls = new ArrayList<>();
-        this.chests = new ArrayList<>();
+        this.exit = new Exit(world, 1, 11);
         this.concurrentBombPowerUps = new ArrayList<>();
         this.bombBlastPowerUp = new ArrayList<>();
         this.enemies = new ArrayList<>();
@@ -192,6 +192,15 @@ public class GameMap {
                     }
                 }
         );
+
+        float player_X1 = Math.round(getPlayer().getX());
+        float player_Y1 = Math.round(getPlayer().getY());
+        if(getExit().getX() == player_X1 && getExit().getY() == player_Y1){
+            MusicTrack.PLAYER_MOVE1.stop();
+            MusicTrack.PLAYER_MOVE2.stop();
+            MusicTrack.POWERUP_TAKEN.play();
+            game.goToVictoryScreen();
+        }
 
         getDestructibleWalls()
                 .parallelStream()
@@ -355,8 +364,12 @@ public class GameMap {
         this.destructibleWalls = destructibleWallsOfSelectedMap;
     }
 
-    public ArrayList<Chest> getChests() {
-        return chests;
+    public Exit getExit() {
+        return exit;
+    }
+
+    public void setExit(Exit exit) {
+        this.exit = exit;
     }
 
     /** Returns the flowers on the map. */

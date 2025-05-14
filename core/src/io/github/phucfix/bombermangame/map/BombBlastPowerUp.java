@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.phucfix.bombermangame.texture.Textures;
 
-public class BombBlastPowerUp extends Chest {
+public class BombBlastPowerUp extends Exit {
     private boolean powerTaken;
 
     public BombBlastPowerUp(World world, float x, float y){

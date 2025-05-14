@@ -25,6 +25,8 @@ public class Player implements Drawable {
 
     private boolean isDead = false;
 
+    private boolean isDeathAnimationFinished = false;
+
     private TextureRegion facing;
 
     private float playerSpeed;
@@ -79,11 +81,11 @@ public class Player implements Drawable {
      */
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
+        float xVelocity = 0;
+        float yVelocity = 0;
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
         if (!isDead) {
-            float xVelocity = 0;
-            float yVelocity = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 xVelocity = -playerSpeed;
             } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -93,8 +95,8 @@ public class Player implements Drawable {
             } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 yVelocity = playerSpeed;
             }
-            this.hitbox.setLinearVelocity(xVelocity, yVelocity);
         }
+        this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
     @Override
@@ -129,7 +131,7 @@ public class Player implements Drawable {
             this.hitbox.setActive(false);
             TextureRegion playerDemise = Animations.CHARACTER_DEMISE.getKeyFrame(this.elapsedTime, false);
             if (Animations.CHARACTER_DEMISE.isAnimationFinished(this.elapsedTime)) {
-                MusicTrack.PLAYER_DEMISE.stop();
+                isDeathAnimationFinished = true;
                 return null; ///return null as player is destroyed
             }
             return playerDemise;
@@ -171,7 +173,12 @@ public class Player implements Drawable {
         this.elapsedTime = 0; ///resets the elapsed time such that animation starts from 0th frame
         MusicTrack.PLAYER_MOVE1.stop();
         MusicTrack.PLAYER_MOVE2.stop();
-        MusicTrack.PLAYER_DEMISE.play();
+        if(dead) {
+            MusicTrack.PLAYER_DEMISE.play();
+        }
+        else {
+            this.hitbox.setActive(true);
+        }
         isDead = dead;
     }
 
@@ -196,5 +203,11 @@ public class Player implements Drawable {
         this.playerSpeed = playerSpeed;
     }
 
+    public boolean isDeathAnimationFinished() {
+        return isDeathAnimationFinished;
+    }
 
+    public void setDeathAnimationFinished(boolean deathAnimationFinished) {
+        isDeathAnimationFinished = deathAnimationFinished;
+    }
 }

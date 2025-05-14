@@ -16,13 +16,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.map.Bomb;
 
-public class LostScreen implements Screen {
+public class VictoryScreen implements Screen {
+
     private final BombermanGame game;
 
     private final Stage stage;
 
-    public LostScreen(BombermanGame game) {
+
+    public VictoryScreen(BombermanGame game) {
         this.game = game;
         var camera = new OrthographicCamera();
         camera.zoom = 1.4f; // Set camera zoom for a closer view
@@ -34,16 +37,18 @@ public class LostScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("GAME OVER", game.getSkin(), "title")).padBottom(80).row();
-        table.add(new Label("Better Luck Next Time", game.getSkin(), "title")).padBottom(40).row();
+        table.add(new Label("You WON :)", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("You are a GigaChad", game.getSkin())).padBottom(40).row();
 
-        TextButton resumeButton = new TextButton("RESTART", game.getSkin());
+
+        TextButton resumeButton = new TextButton("WannaPlayAgain?", game.getSkin());
         table.add(resumeButton).width(400).row();
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 MusicTrack.GAME_OVER.stop();
                 game.loadDefaultMap();
+
             }
         });
 
@@ -55,10 +60,13 @@ public class LostScreen implements Screen {
                 game.goToMenu();
             }
         });
+
+
     }
 
     @Override
     public void show() {
+        // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -75,19 +83,29 @@ public class LostScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+
+    }
 
     @Override
-    public void pause() {}
+    public void pause() {
+
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+
+    }
 
     @Override
     public void dispose() {
         stage.dispose();
     }
+
+
 }
