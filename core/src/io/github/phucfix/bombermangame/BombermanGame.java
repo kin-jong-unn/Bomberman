@@ -56,6 +56,9 @@ public class BombermanGame extends Game {
      */
     private GameMap map;
 
+    private Hud hud;
+
+
     /**
      * Constructor for BomberQuestGame.
      *
@@ -78,6 +81,8 @@ public class BombermanGame extends Game {
 
         // Load UI Skin
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
+
+        hud = new Hud(spriteBatch, getSkin().getFont("font"), this);
 
 
         // Load default map from "map-1.properties"
@@ -168,10 +173,13 @@ public class BombermanGame extends Game {
      */
     public void goToPauseScreen() {
         MusicTrack.LEVEL_THEME.stop();
+        MusicTrack.LEVEL_THEME.stop();
+        Hud.setTimerPaused(true);
         this.setScreen(new PauseScreen(this));
     }
 
     public void goToLostScreen(){
+        Hud.setTimerPaused(true);
         MusicTrack.LEVEL_THEME.stop();
         MusicTrack.LEVEL_THEME2.stop();
         MusicTrack.PLAYER_MOVE1.stop();
@@ -335,5 +343,13 @@ public class BombermanGame extends Game {
 
     public void setMultiLevelSelected(boolean multiLevelSelected) {
         isMultiLevelSelected = multiLevelSelected;
+    }
+
+    public Hud getHud() {
+        return hud;
+    }
+
+    public void resetHud() {
+        hud = new Hud(spriteBatch, getSkin().getFont("font"), this);
     }
 }

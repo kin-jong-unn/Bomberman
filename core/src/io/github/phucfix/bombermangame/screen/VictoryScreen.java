@@ -46,9 +46,11 @@ public class VictoryScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.resetHud();
                 GameScreen.setGameWon(false);
                 MusicTrack.GAME_OVER.stop();
                 MusicTrack.LEVEL_THEME.play();
+                Bomb.setActiveBombs(0);
                 Bomb.setMaxConcurrentBombs(1);
                 Bomb.setCurrentBombRadius(1);
                 game.loadDefaultMap();
@@ -61,6 +63,7 @@ public class VictoryScreen implements Screen {
         goToMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
                 MusicTrack.GAME_OVER.stop();
                 game.goToMenu();
             }
@@ -81,6 +84,7 @@ public class VictoryScreen implements Screen {
             MusicTrack.LEVEL_COMPLETED.stop();
             GameScreen.setGameWon(false);
             MusicTrack.LEVEL_THEME.play();
+            Bomb.setActiveBombs(0);
             Bomb.setMaxConcurrentBombs(1);
             Bomb.setCurrentBombRadius(1);
             game.loadDefaultMap();

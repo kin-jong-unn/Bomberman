@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import io.github.phucfix.bombermangame.BombermanGame;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.map.Bomb;
 
 
 public class PauseScreen implements Screen {
@@ -41,8 +43,24 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                Hud.setTimerPaused(false);
                 ///Clicking on This button does not work because we are already in the gameScreen?But pressing enter does work.
                 game.goToGame();
+                MusicTrack.GAME_PAUSE.play();
+            }
+        });
+
+        TextButton goToMenu = new TextButton("Go to Main Menu", game.getSkin());
+        table.add(goToMenu).width(350).row();
+        goToMenu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.resetHud();
+                MusicTrack.GAME_OVER.stop();
+                Bomb.setActiveBombs(0);
+                Bomb.setMaxConcurrentBombs(1);
+                Bomb.setCurrentBombRadius(1);
+                game.goToMenu();
             }
         });
     }
@@ -55,6 +73,7 @@ public class PauseScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Hud.setTimerPaused(false);
             game.goToGame();
         }
         float frameTime = Math.min(deltaTime, 0.250f); // Cap frame time to 250ms to prevent spiral of death        ScreenUtils.clear(Color.BLACK);

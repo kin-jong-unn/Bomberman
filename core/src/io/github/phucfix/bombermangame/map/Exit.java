@@ -75,4 +75,5 @@ public class Exit implements Drawable {
     public void destroy() {
         this.hitbox.setActive(false);
     }
+
 }

@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.map.Bomb;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -58,22 +59,28 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
                                        @Override
                                        public void changed(ChangeEvent event, Actor actor) {
+                                           game.resetHud();
+                                           Bomb.setActiveBombs(0);
+                                           Bomb.setMaxConcurrentBombs(1);
+                                           Bomb.setCurrentBombRadius(1);
                                            MusicTrack.LEVEL_THEME.play();
-                                           game.loadDefaultMap();// Change to the game screen when button is pressed
+                                           game.loadDefaultMap();
                                        }
                                    });
 
         TextButton loadAChallenge = new TextButton("Challenge", game.getSkin());
         table.add(loadAChallenge).width(300).row();
         loadAChallenge.addListener(new ChangeListener() {
+                                       public void changed(ChangeEvent changeEvent, Actor actor) {
+                                           game.resetHud();
+                                           Bomb.setActiveBombs(0);
+                                           Bomb.setMaxConcurrentBombs(1);
+                                           Bomb.setCurrentBombRadius(1);
+                                           MusicTrack.LEVEL_THEME.play();
+                                           game.loadChallenge();
 
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                ///This method will open the filechooser window
-                MusicTrack.LEVEL_THEME.play();
-                game.loadChallenge();
-            }
-        });
+                                       }
+                                   });
 
         /** (Aryan)
          * To choose a Map, the user needs a button, that button needs to open the filechooser window.
@@ -84,6 +91,7 @@ public class MenuScreen implements Screen {
 
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.resetHud();
                 ///This method will open the filechooser window
                 game.loadFileChooser();
             }
@@ -100,11 +108,26 @@ public class MenuScreen implements Screen {
         });
 
         Label tipLabel = new Label("Press ENTER for Quick Start", game.getSkin());
-        table.add(tipLabel).padTop(30).row();
+        table.add(tipLabel).padTop(40).row();
         Slider volumeSlider = new Slider(0,1,0.1f,false,game.getSkin());
-        volumeSlider.setAnimateDuration(0.8f);
-        volumeSlider.setVisualPercent(0.6f);
-        table.add(volumeSlider).padTop(30).row();
+
+        volumeSlider.setAnimateDuration(0.6f);
+        volumeSlider.setVisualPercent(MusicTrack.getVolume());
+        volumeSlider.addListener(new ChangeListener() {
+                                     public void changed(ChangeEvent event, Actor actor) {
+                                         float value = volumeSlider.getValue();
+                                         MusicTrack.setVolume(value);
+                                     }
+        });
+        // Add label for volume
+        Table volumeTable = new Table();
+        Label volumeLabel = new Label("Volume", game.getSkin());
+        volumeLabel.setFontScale(1.1f);
+        volumeTable.add(volumeLabel).padRight(40);
+        volumeTable.add(volumeSlider).width(300);
+        table.add(volumeTable).padTop(20).row();
+
+
     }
     
     /**
@@ -115,6 +138,10 @@ public class MenuScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            game.resetHud();
+            Bomb.setActiveBombs(0);
+            Bomb.setMaxConcurrentBombs(1);
+            Bomb.setCurrentBombRadius(1);
             MusicTrack.LEVEL_THEME.play();
             game.loadDefaultMap();
         }

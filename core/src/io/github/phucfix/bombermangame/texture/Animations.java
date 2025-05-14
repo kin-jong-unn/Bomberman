@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Animations {
-    
+
     /**
      * The animation for the character walking down.
      */
@@ -19,9 +19,8 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(1, 6),
             SpriteSheet.ORIGINAL_OBJECTS.at(1, 5)
     );
-
     /**
-     * Walking left
+     * The animation for the character walking left.
      */
     public static final Animation<TextureRegion> CHARACTER_WALK_LEFT = new Animation<>(0.075f,
             SpriteSheet.ORIGINAL_OBJECTS.at(1, 1),
@@ -29,9 +28,8 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(1, 3),
             SpriteSheet.ORIGINAL_OBJECTS.at(1, 2)
     );
-
     /**
-     * Walking up
+     * The animation for the character walking up.
      */
     public static final Animation<TextureRegion> CHARACTER_WALK_UP = new Animation<>(0.075f,
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 4),
@@ -39,9 +37,8 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 6),
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 5)
     );
-
     /**
-     * Walking right
+     * The animation for the character walking right.
      */
     public static final Animation<TextureRegion> CHARACTER_WALK_RIGHT = new Animation<>(0.075f,
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 1),
@@ -49,9 +46,8 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 3),
             SpriteSheet.ORIGINAL_OBJECTS.at(2, 2)
     );
-
     /**
-     * Animation for the character's demise
+     * The animation for the character's demise.
      */
     public static final Animation<TextureRegion> CHARACTER_DEMISE = new Animation<>(0.3f,
             SpriteSheet.ORIGINAL_OBJECTS.at(3, 1),
@@ -63,7 +59,6 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(3, 7),
             SpriteSheet.ORIGINAL_OBJECTS.at(3, 8)
     );
-
     /**
      * The animation for the ticking Bomb.
      */
@@ -75,34 +70,98 @@ public class Animations {
     );
 
     /**
-     * The animation for the bomb blast with bigger radius.
+     * The animation for the center of bomb explosion
      */
-    public static final Animation<TextureRegion> BOMB_BLAST_LONG = new Animation<>(0.05f,
-            SpriteSheet.BOMB_BLAST_LONG.at(5, 1),
-            SpriteSheet.BOMB_BLAST_LONG.at(5, 6),
-            SpriteSheet.BOMB_BLAST_LONG.at(10, 1),
-            SpriteSheet.BOMB_BLAST_LONG.at(10, 6),
-            SpriteSheet.BOMB_BLAST_LONG.at(10, 1),
-            SpriteSheet.BOMB_BLAST_LONG.at(5, 6),
-            SpriteSheet.BOMB_BLAST_LONG.at(5, 1),
-            SpriteSheet.BOMB_BLAST_LONG.at(10, 11)
-    );
-
-    public static final Animation<TextureRegion> BOMB_BLAST_DEFAULT = new Animation<>(0.05f,
-            SpriteSheet.BOMB_BLAST_SHORT.at(6, 2),
-            SpriteSheet.BOMB_BLAST_SHORT.at(6, 7),
-            SpriteSheet.BOMB_BLAST_SHORT.at(11, 2),
-            SpriteSheet.BOMB_BLAST_SHORT.at(11, 7),
-            SpriteSheet.BOMB_BLAST_SHORT.at(11, 2),
-            SpriteSheet.BOMB_BLAST_SHORT.at(6, 7),
-            SpriteSheet.BOMB_BLAST_SHORT.at(6, 2),
-            SpriteSheet.BOMB_BLAST_SHORT.at(10, 11)
+    public static final Animation<TextureRegion> EXPLOSION_CENTER = new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 3)
     );
 
     /**
-     * The animation for breaking walls
+     * The animation for the explosion's right-end
      */
-    public static final Animation<TextureRegion> DESTROY_WALL = new Animation<>(0.13f,
+    public static final Animation<TextureRegion> EXPLOSION_RIGHT_END= new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 5)
+    );
+
+    /**
+     * The animation for the explosion's left-end
+     */
+    public static final Animation<TextureRegion> EXPLOSION_LEFT_END= new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 1)
+    );
+
+    /**
+     * The animation for the explosion's Top-end
+     */
+    public static final Animation<TextureRegion> EXPLOSION_TOP_END = new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(10, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(10, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(10, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(5, 3)
+    );
+
+    /**
+     * The animation for the explosion's bottom end
+     */
+    public static final Animation<TextureRegion> EXPLOSION_BOTTOM_END = new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(9, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(9, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(14, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(14, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(14, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(9, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(9, 3)
+    );
+
+    /**
+     * The animation for the explosion's vertical part
+     */
+    public static final Animation<TextureRegion> EXPLOSION_VERTICAL = new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(6, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(6, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(11, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(6, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(6, 3)
+    );
+
+    /**
+     * The animation for the explosion's horizontal part
+     */
+    public static final Animation<TextureRegion> EXPLOSION_HORIZONTAL = new Animation<>(0.05f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(12, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(7, 2)
+    );
+
+    /// Added animation of breaking the wall (Aryan)
+    public static final Animation<TextureRegion> DESTROY_WALL = new Animation<>(0.07f,
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 6),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 7),
             SpriteSheet.ORIGINAL_OBJECTS.at(4, 8),
@@ -113,17 +172,7 @@ public class Animations {
     );
 
     /**
-     * The animation for enemy
-     */
-    public static final Animation<TextureRegion> ENEMY_ANIMATION = new Animation<>(0.13f,
-            SpriteSheet.ORIGINAL_OBJECTS.at(16, 1),
-            SpriteSheet.ORIGINAL_OBJECTS.at(16, 2),
-            SpriteSheet.ORIGINAL_OBJECTS.at(16, 3),
-            SpriteSheet.ORIGINAL_OBJECTS.at(16, 2)
-    );
-
-    /**
-     * The animation for the enemy's demise
+     * The animation for the enemy's demise.
      */
     public static final Animation<TextureRegion> ENEMY_DEMISE = new Animation<>(0.25f,
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 7),
@@ -138,4 +187,83 @@ public class Animations {
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 11),
             SpriteSheet.ORIGINAL_OBJECTS.at(16, 12)
     );
+
+    public static final Animation<TextureRegion> ENEMY_MOVING_RIGHT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 2)
+
+    );
+    public static final Animation<TextureRegion> ENEMY_MOVING_LEFT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 4),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(16, 5)
+
+    );
+
+    public static final Animation<TextureRegion> BLUE_ENEMY_MOVING_LEFT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 4),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 5)
+
+    );
+
+    public static final Animation<TextureRegion> BLUE_ENEMY_MOVING_RIGHT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 2)
+
+    );
+
+    public static final Animation<TextureRegion> RED_ENEMY_MOVING_RIGHT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 1),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 2),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 3),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 2)
+
+    );
+    public static final Animation<TextureRegion> RED_ENEMY_MOVING_LEFT = new Animation<>(0.11f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 4),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 5),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 6),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 5)
+
+    );
+
+    public static final Animation<TextureRegion> RED_ENEMY_DEMISE = new Animation<>(0.25f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 9),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 11),
+            SpriteSheet.ORIGINAL_OBJECTS.at(18, 12)
+    );
+
+
+
+    public static final Animation<TextureRegion> BLUE_ENEMY_DEMISE = new Animation<>(0.25f,
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(17, 7),
+            SpriteSheet.ORIGINAL_OBJECTS.at(19, 8),
+            SpriteSheet.ORIGINAL_OBJECTS.at(19, 9),
+            SpriteSheet.ORIGINAL_OBJECTS.at(19, 10),
+            SpriteSheet.ORIGINAL_OBJECTS.at(19, 11),
+            SpriteSheet.ORIGINAL_OBJECTS.at(19, 12)
+    );
+
+
+
 }

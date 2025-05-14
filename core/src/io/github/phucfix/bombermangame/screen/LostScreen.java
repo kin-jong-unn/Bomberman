@@ -39,23 +39,29 @@ public class LostScreen implements Screen {
         table.add(new Label("Better Luck Next Time", game.getSkin(), "title")).padBottom(40).row();
 
         TextButton resumeButton = new TextButton("RESTART", game.getSkin());
-        table.add(resumeButton).width(400).row();
+        table.add(resumeButton).width(300).row();
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.resetHud();
                 MusicTrack.GAME_OVER.stop();
                 MusicTrack.LEVEL_THEME.play();
+                Bomb.setActiveBombs(0);
                 Bomb.setMaxConcurrentBombs(1);
                 Bomb.setCurrentBombRadius(1);
-                game.loadDefaultMap();
+                if(game.isMultiLevelSelected()){
+                    game.loadChallenge();
+                } else {
+                    game.loadDefaultMap();
+                }
             }
         });
 
         TextButton goToMenu = new TextButton("Go to Main Menu", game.getSkin());
         table.add(goToMenu).width(400).row();
         goToMenu.addListener(new ChangeListener() {
-            @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MusicTrack.GAME_OVER.stop();
                 game.goToMenu();
             }
         });
@@ -70,11 +76,17 @@ public class LostScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            game.resetHud();
             MusicTrack.GAME_OVER.stop();
             MusicTrack.LEVEL_THEME.play();
+            Bomb.setActiveBombs(0);
             Bomb.setMaxConcurrentBombs(1);
             Bomb.setCurrentBombRadius(1);
-            game.loadDefaultMap();
+            if(game.isMultiLevelSelected()){
+                game.loadChallenge();
+            }else{
+                game.loadDefaultMap();
+            }
         }
         float frameTime = Math.min(deltaTime, 0.250f); // Cap frame time to 250ms to prevent spiral of death        ScreenUtils.clear(Color.BLACK);
         ScreenUtils.clear(Color.BLACK);

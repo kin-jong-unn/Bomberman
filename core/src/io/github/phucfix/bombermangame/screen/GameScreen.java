@@ -50,6 +50,8 @@ public class GameScreen implements Screen {
     private CollisionDetecter collisionDetecter;
 
     private final Stage stage;
+    /// The Level increases as the player completes challenges
+    private static int level;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -61,7 +63,7 @@ public class GameScreen implements Screen {
         gameLost = false;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
-        this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), game);
+        this.hud = game.getHud();
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
@@ -70,6 +72,7 @@ public class GameScreen implements Screen {
         viewHeight = Gdx.graphics.getHeight();
         Viewport viewport = new ScreenViewport(mapCamera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch());
+        level = 1;
     }
 
     
@@ -80,10 +83,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || gameLost) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || gameLost) {
             game.goToMenu();
             ///We need to dispose the bloody screen properly. In order to load a new map properly.
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             MusicTrack.GAME_PAUSE.play();
             game.goToPauseScreen();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
@@ -92,7 +95,7 @@ public class GameScreen implements Screen {
         }
         
         // Clear the previous frame from the screen, or else the picture smears
-        ScreenUtils.clear(Color.LIGHT_GRAY);
+        ScreenUtils.clear(Color.BLACK);
 
         // Cap frame time to 250ms to prevent spiral of death
         float frameTime = Math.min(deltaTime, 0.250f);
@@ -158,6 +161,10 @@ public class GameScreen implements Screen {
             }
         }
 
+        for(ExplosionSegment segment : map.getSegments()){
+            draw(spriteBatch,segment);
+        }
+
         for(ConcurrentBombPowerUp powerUp : map.getConcurrentBombPowerUps()){
             if(powerUp!= null){
                 draw(spriteBatch, powerUp);
@@ -178,8 +185,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        draw(spriteBatch, map.getExit());
-
         for(IndestructibleWall indestructibleWall : map.getIndestructibleWalls()){
             if(indestructibleWall != null){
                 draw(spriteBatch, indestructibleWall);
@@ -194,6 +199,13 @@ public class GameScreen implements Screen {
             }
         }
 
+        for(SpeedPowerUp power: map.getSpeedIncreasePowerUps()){
+            if(power != null){
+                draw(spriteBatch, power);
+            }
+        }
+
+        draw(spriteBatch, map.getExit());
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.X) && !map.getPlayer().isDead() && Bomb.getActiveBombs() < Bomb.getMaxConcurrentBombs()){
             float bombX = Math.round(map.getPlayer().getX());
@@ -236,16 +248,6 @@ public class GameScreen implements Screen {
             // Calculate width and height of the texture in pixels
             float width = texture.getRegionWidth() * SCALE;
             float height = texture.getRegionHeight() * SCALE;
-
-            /// If the Drawable is a bomb and the elapsed time exceeds the explosion time,
-            /// center the explosion texture around the bomb's position
-            if (drawable instanceof Bomb bomb) {
-                if (bomb.getBombTimer() >= Bomb.BOMB_EXPLOSION_TIME) {
-                    // Adjust x and y to center the explosion texture
-                    x -= (width / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center horizontally
-                    y -= (height / 2f) - (TILE_SIZE_PX * SCALE / 2f); // Center vertically
-                }
-            }
 
             // Draw the texture
             spriteBatch.draw(texture, x, y, width, height);
@@ -302,5 +304,13 @@ public class GameScreen implements Screen {
 
     public static void setGameWon(boolean gameWon) {
         GameScreen.gameWon = gameWon;
+    }
+
+    public static int getLevel() {
+        return level;
+    }
+
+    public static void setLevel(int level) {
+        GameScreen.level = level;
     }
 }

@@ -54,14 +54,16 @@ public class GameMap {
     private ArrayList<Enemy> enemies;
 
     private final Flowers[][] flowers;
+    private List<ExplosionSegment> segments = new ArrayList<>();
     ///Walls of the Selected Map
     private ArrayList<IndestructibleWall> indestructibleWalls;
     private ArrayList<DestructibleWall> destructibleWalls;
     private Exit exit;
     private ArrayList<ConcurrentBombPowerUp> concurrentBombPowerUps;
     private ArrayList<BombBlastPowerUp> bombBlastPowerUp;
+    private ArrayList<SpeedPowerUp> speedIncreasePowerUps;
 
-    private ArrayList<Bomb> bombs;
+    private final ArrayList<Bomb> bombs;
     // Tracks elapsed time since the bomb was planted
     // Indicates if the bomb is being monitored
     private CollisionDetecter collisionDetecter;
@@ -87,11 +89,39 @@ public class GameMap {
         //Initialized the walls, chests and Breakable walls, and flowers
         this.indestructibleWalls = new ArrayList<>();
         this.destructibleWalls = new ArrayList<>();
-        this.exit = new Exit(world, 10, 13);
         this.concurrentBombPowerUps = new ArrayList<>();
         this.bombBlastPowerUp = new ArrayList<>();
+        this.speedIncreasePowerUps = new ArrayList<>();
         this.enemies = new ArrayList<>();
         parseKeyValueToBuild(coordinatesAndObjects);
+
+        if(getExit() == null) {
+            /// This code will be executed if there is no Exit in the map file
+            if (!destructibleWalls.isEmpty()) {
+                Random random = new Random();
+                int wallno = random.nextInt(destructibleWalls.size());
+                DestructibleWall wallForExit = destructibleWalls.get(wallno);
+                float exitX = wallForExit.getX();
+                float exitY = wallForExit.getY();
+                this.exit = new Exit(world, exitX, exitY);
+
+                for(int i = 0; i < destructibleWalls.size(); i++){
+                    Random random1 = new Random();
+                    int wall3 = random1.nextInt(destructibleWalls.size());
+                    float indexOfActualBreakableWall = i + 17 * wall3/3 ;
+                    int roundedIndex = Math.round(indexOfActualBreakableWall);
+
+                    if(roundedIndex < destructibleWalls.size() && roundedIndex >= 0){
+                        DestructibleWall wall1=  destructibleWalls.get(roundedIndex);
+                        float speedPowerUpX = wall1.getX();
+                        float speedPowerUpY = wall1.getY();
+
+                        this.speedIncreasePowerUps.add(new SpeedPowerUp(world, speedPowerUpX, speedPowerUpY));
+                    }
+
+                }
+            }
+        }
 
         this.flowers = new Flowers[getMapMaxX()+1][getMapMaxY()+1];
         for (int i = 0; i < flowers.length; i++) {
@@ -127,9 +157,15 @@ public class GameMap {
 
                 switch (object) {
                     case "0" -> this.indestructibleWalls.add(new IndestructibleWall(world, x, y));
-                    case "1" -> this.destructibleWalls.add(new DestructibleWall(world, x, y));
+                    case "1" -> {
+                        this.destructibleWalls.add(new DestructibleWall(world, x, y));
+                    }
                     case "2" -> this.player = new Player(world, x, y);
                     case "3" -> this.enemies.add(new Enemy(world, x, y));
+                    case "4" -> {
+                        this.exit = new Exit(world, x, y);
+                        this.destructibleWalls.add(new DestructibleWall(world, x, y));
+                    }
                     case "5" -> {
                         this.concurrentBombPowerUps.add(new ConcurrentBombPowerUp(world, x, y));
                         this.destructibleWalls.add(new DestructibleWall(world, x, y));
@@ -161,13 +197,18 @@ public class GameMap {
         }
         if (!this.enemies.isEmpty()) {
             for (Enemy enemy : this.getEnemies()){
-                enemy.tick(frameTime);
+                enemy.tick(player.getX(), player.getY(), frameTime);
             }
         }
         if(!this.bombs.isEmpty()) {
             getBombs()
                     .parallelStream()
                     .forEach(bomb -> bomb.tick(0.017f));
+        }
+
+        if(!this.segments.isEmpty()) {
+            getSegments().forEach(segment -> segment.tick(0.017f));
+
         }
 
         getConcurrentBombPowerUps().forEach(power -> {
@@ -194,20 +235,35 @@ public class GameMap {
                 }
         );
 
+        getSpeedIncreasePowerUps().forEach(speedpower -> {
+            float player_X = Math.round(getPlayer().getX());
+            float player_Y = Math.round(getPlayer().getY());
+            if(speedpower.getX() == player_X && speedpower.getY() == player_Y && !speedpower.isPowerTaken()){
+                MusicTrack.POWERUP_TAKEN.play();
+                speedpower.setPowerTaken(true);
+                speedpower.destroy();
+                player.setPlayerSpeed(player.getPlayerSpeed() + 0.3F);
+
+            }
+        });
+
         float player_X1 = Math.round(getPlayer().getX());
         float player_Y1 = Math.round(getPlayer().getY());
-        if(game.isMultiLevelSelected()){
-            if(getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
-                MusicTrack.LEVEL_THEME.stop();
-                MusicTrack.LEVEL_THEME2.play();
-                game.loadDefaultMap();
-            }
-        } else {
-            if(getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
-                GameScreen.setGameWon(true);
-                MusicTrack.PLAYER_MOVE1.stop();
-                MusicTrack.PLAYER_MOVE2.stop();
-                game.goToVictoryScreen();
+        if(getRemainingEnemies() == 0) {
+            if (game.isMultiLevelSelected()) {
+                if (getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
+                    game.resetHud();
+                    MusicTrack.LEVEL_THEME.stop();
+                    MusicTrack.LEVEL_THEME2.play();
+                    game.loadDefaultMap();
+                }
+            } else {
+                if (getExit().getX() == player_X1 && getExit().getY() == player_Y1) {
+                    GameScreen.setGameWon(true);
+                    MusicTrack.PLAYER_MOVE1.stop();
+                    MusicTrack.PLAYER_MOVE2.stop();
+                    game.goToVictoryScreen();
+                }
             }
         }
 
@@ -238,49 +294,11 @@ public class GameMap {
                     MusicTrack.BOMB_EXPLOSION.play();
                     float explosionRadius = bomb.getCurrentBombRadius();
 
-                    /// used parallel streams for concurrent processes
-                    getDestructibleWalls()
-                            .parallelStream()
-                            .forEach(wall -> {
-                                // Check if the wall is aligned with the bomb in either X or Y direction
-                                boolean isAlignedX = wall.getX() == bombX && Math.abs(wall.getY() - bombY) <= explosionRadius;
-                                boolean isAlignedY = wall.getY() == bombY && Math.abs(wall.getX() - bombX) <= explosionRadius;
+                    /// Creates the explosion animation for each segment of the bomb
+                    ///and destroys the destroyable objects in that segment
+                    List<ExplosionSegment> newSegments = segmentsOfExplosion(bombX, bombY, explosionRadius);
+                    segments.addAll(newSegments);
 
-                                // Destroy only if it's in the explosion radius and aligned with the bomb
-                                if ((isAlignedX || isAlignedY) && !wall.isDestroyed()) {
-                                    wall.destroy();
-                                }
-                            });
-
-                    getEnemies()
-                            .forEach(enemy -> {
-                                // Round enemy's coordinates to integers
-                                float enemyX = Math.round(enemy.getX());
-                                float enemyY = Math.round(enemy.getY());
-
-                                // Check if the enemy is aligned with the bomb in either X or Y direction
-                                boolean isAlignedX = enemyX == bombX && Math.abs(enemyY - bombY) <= explosionRadius;
-                                boolean isAlignedY = enemyY == bombY && Math.abs(enemyX - bombX) <= explosionRadius;
-
-                                // Destroy the enemy only if it's within the explosion radius and aligned with the bomb
-                                if ((isAlignedX || isAlignedY) && !enemy.isDestroyed()) {
-                                    enemy.destroy();
-                                }
-                            });
-
-                    ///  Applying the same logic for players death
-                    // Round enemy's coordinates to integers
-                    float playernewX = Math.round(getPlayer().getX());
-                    float playernewY = Math.round(getPlayer().getY());
-
-                    // Check if the enemy is aligned with the bomb in either X or Y direction
-                    boolean isAlignedpX = playernewX == bombX && Math.abs(playernewY - bombY) <= explosionRadius;
-                    boolean isAlignedpY = playernewY == bombY && Math.abs(playernewX - bombX) <= explosionRadius;
-
-                    // Destroy the enemy only if it's within the explosion radius and aligned with the bomb
-                    if ((isAlignedpX || isAlignedpY) && !getPlayer().isDead()) {
-                        getPlayer().setDead(true);
-                    }
                     bomb.setBombActive(false);
                     bomb.destroy();
                     Bomb.decrementActiveBombs();
@@ -288,6 +306,69 @@ public class GameMap {
             }
         }
         doPhysicsStep(frameTime);
+    }
+
+    private List<ExplosionSegment> segmentsOfExplosion(float x, float y, float radius) {
+        List<ExplosionSegment> newSegments = new ArrayList<>();
+        newSegments.add(new ExplosionSegment(Math.round(x), Math.round(y), 0, 0, false));
+        destroySegmentObjects(x, y); // Destroy objects at the bomb's tile first
+
+        // Directions for up, down, left, right
+        int[][] directions = {
+                {0, 1},
+                {0, -1},
+                {-1, 0},
+                {1, 0}
+
+        };
+
+        for (int[] dir : directions) {
+            for (int i = 1; i <= radius; i++) {
+                float segmentX = x + dir[0] * i;
+                float segmentY = y + dir[1] * i;
+                /// if there is an Indestructible wall at a segment the loop breaks
+                /// that means it will not create any bomb segment beyond the wall
+                if (isIndestructibleWallAt(segmentX, segmentY)) {
+                    break;
+                }
+
+                // Create an explosion segment
+                boolean isEndSegment = (i == radius);
+                segments.add(new ExplosionSegment(
+                        Math.round(segmentX),
+                        Math.round(segmentY),
+                        dir[0], dir[1], isEndSegment
+                ));
+
+                destroySegmentObjects(segmentX,segmentY);
+            }
+        }
+
+        newSegments.add(new ExplosionSegment(Math.round(x), Math.round(y), 0, 0, false));
+        return newSegments;
+    }
+
+    private boolean isIndestructibleWallAt(float x, float y) {
+        return indestructibleWalls.stream().anyMatch(w -> w.getX() == x && w.getY() == y);
+    }
+
+    private void destroySegmentObjects(float x, float y) {
+        //Destroy all the destructible walls
+        getDestructibleWalls().parallelStream().forEach(wall -> {
+                    if (wall.getX() == x && wall.getY() == y && !wall.isDestroyed()) {
+                        wall.destroy();
+                    }
+        });
+
+        // Destroy enemies
+        getEnemies().forEach(enemy -> {
+                    if (Math.round(enemy.getX()) == x && Math.round(enemy.getY()) == y && !enemy.isDestroyed()) {
+                        enemy.destroy();
+                    }
+        });
+        if (Math.round(getPlayer().getX()) == x && Math.round(getPlayer().getY()) == y && !getPlayer().isDead()) {
+            getPlayer().setDead(true);
+        }
     }
 
     /**
@@ -420,5 +501,21 @@ public class GameMap {
 
     public int getMapMaxY() {
         return mapMaxY;
+    }
+
+    public List<ExplosionSegment> getSegments() {
+        return segments;
+    }
+
+    public void setSegments(List<ExplosionSegment> segments) {
+        this.segments = segments;
+    }
+
+    public int getRemainingEnemies(){
+        return (int)enemies.stream().filter(e -> !e.isDestroyed()).count();
+    }
+
+    public ArrayList<SpeedPowerUp> getSpeedIncreasePowerUps() {
+        return speedIncreasePowerUps;
     }
 }
