@@ -8,6 +8,9 @@ import io.github.phucfix.bombermangame.texture.Drawable;
 /**
  * A bomb is a static object with a hitbox, so the player cannot walk through it.
  */
+/**
+ * A bomb is a static object with a hitbox, so the player cannot walk through it.
+ */
 public class Bomb implements Drawable {
 
     // We would normally get the position from the hitbox, but since we don't need to move the bomb, we can store the position directly.
@@ -17,16 +20,15 @@ public class Bomb implements Drawable {
     private final Body hitbox;
     public static final float BOMB_EXPLOSION_TIME = 3 ;
 
+    /// Static as it changes for all the bomb objects
     private static int activeBombs = 0;
     /// Initially only one bomb at a time
     private static int maxConcurrentBombs = 1;
 
 
-    public static final int SMALL_EXPLOSION_RADIUS = 1;
-    public static final int BIG_EXPLOSION_RADIUS = 2;
-
-    private boolean increasedBombRadius = false;
-    private boolean concurrentBombs = false;
+    private static int currentBombRadius = 1;
+    /// Initially only one bomb at a time
+    private static final int MAX_BOMB_RADIUS = 8;
 
     private boolean bombActive ;
 
@@ -85,13 +87,13 @@ public class Bomb implements Drawable {
         if (bombTimer >= BOMB_EXPLOSION_TIME) {
             destroy(); /// Deactivate the bomb's hitbox when the bomb explodes.
             /// Show the explosion animation
-            if(isIncreasedBombRadius()) {
+            if(currentBombRadius == 1) {
                 /// radius increases by POWER_UP
-                return Animations.BOMB_BLAST_LONG.getKeyFrame(this.bombTimer - BOMB_EXPLOSION_TIME, false);
+                return Animations.BOMB_BLAST_DEFAULT.getKeyFrame(this.bombTimer - BOMB_EXPLOSION_TIME, false);
             }
             else{
                 /// Default bomb blast radius
-                return Animations.BOMB_BLAST_DEFAULT.getKeyFrame(this.bombTimer - BOMB_EXPLOSION_TIME, false);
+                return Animations.BOMB_BLAST_LONG.getKeyFrame(this.bombTimer - BOMB_EXPLOSION_TIME, false);
             }
         }
         /// Shows the ticking animation, looping as long as the bomb is ticking
@@ -102,21 +104,18 @@ public class Bomb implements Drawable {
         return null;
     }
 
-    public int getExplosionRadius() {
-        if(isIncreasedBombRadius()) {
-            return BIG_EXPLOSION_RADIUS;
-        }
-        else {
-            return SMALL_EXPLOSION_RADIUS;
+    public static int getCurrentBombRadius() {
+        return currentBombRadius;
+    }
+
+    public static void incrementCurrentBombRadius(){
+        if(currentBombRadius < MAX_BOMB_RADIUS){
+            currentBombRadius++;
         }
     }
 
-    public boolean isIncreasedBombRadius() {
-        return increasedBombRadius;
-    }
-
-    public void setIncreasedBombRadius(boolean increasedBombRadius) {
-        this.increasedBombRadius = increasedBombRadius;
+    public static void setCurrentBombRadius(int currentBombRadius) {
+        Bomb.currentBombRadius = currentBombRadius;
     }
 
     /// Methods to monitor the active Bombs
@@ -129,6 +128,14 @@ public class Bomb implements Drawable {
     public static int getActiveBombs() {
         return activeBombs;
     }
+    public static void setActiveBombs(int n) {
+        activeBombs = n;
+    }
+    public static void setMaxConcurrentBombs(int n) {
+        maxConcurrentBombs = n;
+    }
+
+
     public static int getMaxConcurrentBombs() {
         return maxConcurrentBombs;
     }
@@ -167,27 +174,11 @@ public class Bomb implements Drawable {
         return bombTimer;
     }
 
-    public boolean isConcurrentBombs() {
-        return concurrentBombs;
-    }
-
-    public void setConcurrentBombs(boolean concurrentBombs) {
-        this.concurrentBombs = concurrentBombs;
-    }
-
     public boolean isBombActive() {
         return bombActive;
     }
 
     public void setBombActive(boolean bombActive) {
         this.bombActive = bombActive;
-    }
-
-    public static void setActiveBombs(int n) {
-        activeBombs = n;
-    }
-
-    public static void setMaxConcurrentBombs(int n) {
-        maxConcurrentBombs = n;
     }
 }

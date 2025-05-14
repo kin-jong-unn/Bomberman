@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.phucfix.bombermangame.BombermanGame;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.map.Bomb;
 
 public class LostScreen implements Screen {
     private final BombermanGame game;
@@ -43,6 +44,9 @@ public class LostScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 MusicTrack.GAME_OVER.stop();
+                MusicTrack.LEVEL_THEME.play();
+                Bomb.setMaxConcurrentBombs(1);
+                Bomb.setCurrentBombRadius(1);
                 game.loadDefaultMap();
             }
         });
@@ -59,6 +63,7 @@ public class LostScreen implements Screen {
 
     @Override
     public void show() {
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -66,6 +71,9 @@ public class LostScreen implements Screen {
     public void render(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             MusicTrack.GAME_OVER.stop();
+            MusicTrack.LEVEL_THEME.play();
+            Bomb.setMaxConcurrentBombs(1);
+            Bomb.setCurrentBombRadius(1);
             game.loadDefaultMap();
         }
         float frameTime = Math.min(deltaTime, 0.250f); // Cap frame time to 250ms to prevent spiral of death        ScreenUtils.clear(Color.BLACK);

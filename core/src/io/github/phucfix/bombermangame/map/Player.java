@@ -10,6 +10,7 @@ import io.github.phucfix.bombermangame.texture.Animations;
 import io.github.phucfix.bombermangame.texture.Drawable;
 import io.github.phucfix.bombermangame.texture.SpriteSheet;
 import io.github.phucfix.bombermangame.audio.MusicTrack;
+import io.github.phucfix.bombermangame.screen.GameScreen;
 
 /**
  * Represents the player character in the game.
@@ -62,10 +63,6 @@ public class Player implements Drawable {
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
         body.createFixture(circle, 1.0f);
-        ///This fixture has the physics properties of the players hitbox.
-        ///Doesnt really do that much thing, this sliding
-        //        playerr.setFriction(10f); //To prevent sliding:
-        //       playerr.setRestitution(3f);// to prevent bouncing
 
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
@@ -101,7 +98,7 @@ public class Player implements Drawable {
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        if (!isDead) {
+        if (!isDead && !GameScreen.isGameWon()) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 MusicTrack.PLAYER_MOVE2.stop();
                 MusicTrack.PLAYER_MOVE1.play();

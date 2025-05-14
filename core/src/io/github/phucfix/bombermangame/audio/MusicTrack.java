@@ -13,14 +13,16 @@ import com.badlogic.gdx.audio.Music;
  */
 public enum MusicTrack {
 
-    MENU_BGM("menu-bgm.mp3", 0.15f,true),
+    MENU_BGM("menu-bgm.mp3", 0.15f,false),
     PLAYER_MOVE1("player-moving1.mp3", 0.15f,true),
     PLAYER_MOVE2("player-moving2.mp3", 0.15f,true),
     LEVEL_THEME("level-theme.mp3", 0.15f,true),
+    LEVEL_THEME2("level-theme2.mp3", 0.15f,false),
+    LEVEL_COMPLETED("level-complete.mp3", 0.15f,false),
     PLAYER_DEMISE("player-demise.mp3", 0.15f,false),
     BOMB_PLANT("bomb-plant-sfx.mp3",0.15f,false),
     BOMB_EXPLOSION("bomb-explosion-sfx.mp3",0.15f,false),
-    POWERUP_TAKEN("con-bomb-power-up.mp3",0.15f,false),
+    POWERUP_TAKEN("power-up-sfx.mp3",0.15f,false),
     GAME_PAUSE("game-pause-sfx.mp3",0.15f,false),
     GAME_OVER("game-over.mp3",0.15f,false);
 

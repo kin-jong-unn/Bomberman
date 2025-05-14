@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Color;
 import io.github.phucfix.bombermangame.BombermanGame;
+import io.github.phucfix.bombermangame.audio.MusicTrack;
 
 
 /**
@@ -48,7 +49,9 @@ public class Hud {
         font.draw(spriteBatch, "Bomb blast radius: 1", 10, Gdx.graphics.getHeight() - 45);
         font.setColor(Color.GREEN);
         int remainingTime = (int)(200 - this.elapsedTime);
-        if(remainingTime < 50 && remainingTime >20){
+        if(remainingTime < 70 && remainingTime >20){
+            MusicTrack.LEVEL_THEME.stop();
+            MusicTrack.LEVEL_THEME2.play();
             font.setColor(Color.YELLOW);
         } else if(remainingTime <= 20 && remainingTime > 0){
             font.setColor(Color.RED);
