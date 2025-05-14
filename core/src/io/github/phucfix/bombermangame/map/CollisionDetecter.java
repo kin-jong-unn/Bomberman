@@ -20,7 +20,10 @@ public class CollisionDetecter implements ContactListener {
         } else if ((fixtureB.getBody().getUserData() instanceof Player) && fixtureA.getBody().getUserData() instanceof Enemy){
             Player player = (Player) fixtureB.getBody().getUserData();
             player.setDead(true);
+        } else if ((fixtureA.getBody().getUserData() instanceof Enemy) && fixtureB.getBody().getUserData()instanceof Enemy){
+            Enemy enemy = (Enemy) fixtureA.getBody().getUserData();
         }
+
     }
 
     @Override
